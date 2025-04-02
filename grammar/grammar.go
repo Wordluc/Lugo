@@ -22,13 +22,28 @@ type Variable struct {
 }
 
 type Expresion struct {
-	Left  *Value         `@@`
-	Right []*ExpresionOp `@@?`
+	HExp *HExpresion   `@@`  // Highest level: Terms
+	LExp []*LExpresion `@@*` // Lower precedence: Addition & Subtraction
 }
 
-type ExpresionOp struct {
-	Operation string     `@("+" | "-" | "/")`
-	Expresion *Expresion `@@`
+type LExpresion struct {
+	Operator string      `@("+" | "-")`
+	HExp     *HExpresion `@@`
+}
+
+type HExpresion struct {
+	BaseValue *BaseValueExp `@@`
+	Right     *OpFactor     `@@*` // Lower precedence: Multiplication & Division
+}
+
+type OpFactor struct {
+	Operator  string        `@("/"|"*")` // Multiplication or division
+	BaseValue *BaseValueExp `@@`
+}
+
+type BaseValueExp struct {
+	Base       *Value     `@@`
+	Expression *Expresion `| "(" @@ ")"` // Parentheses
 }
 
 type Value struct {
@@ -110,18 +125,28 @@ func (e *Value) toString() string {
 	return "<undefined>"
 }
 
-func (e *ExpresionOp) toString() string {
-	res := ""
-	res += e.Operation
-	res += e.Expresion.toString()
+func (e *BaseValueExp) toString() string {
+	if e.Base != nil {
+		return e.Base.toString()
+	}
+	if e.Expression != nil {
+		return e.Expression.toString()
+	}
+	return ""
+}
+func (e *Expresion) toString() string {
+	res := e.HExp.toString()
+	for _, op := range e.LExp {
+		res += " " + op.Operator + " " + op.HExp.toString()
+	}
 	return res
 }
 
-func (e *Expresion) toString() string {
-	res := ""
-	res += e.Left.toString()
-	for _, ex := range e.Right {
-		res += ex.toString()
+func (t *HExpresion) toString() string {
+	res := "(" + t.BaseValue.toString()
+	if t.Right != nil {
+		res += " " + t.Right.Operator + " " + t.Right.BaseValue.toString()
 	}
+	res += ")"
 	return res
 }

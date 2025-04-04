@@ -1,2 +1,4 @@
-local a = 2.3 + 3
+local a = 2.3 + 43
 print(a)
+function lucaa()
+end

@@ -10,8 +10,17 @@ type Lua struct {
 	Statements []*Statement `@@*` //local a=n;
 	Expresions []*Expresion `@@*` //4+2
 }
-
 type Statement struct {
+	StatementVariable *StatementVariable `@@`
+	StatementFunction *StatementFunction `|@@`
+}
+type StatementFunction struct {
+	Declaration string   `@"function"`
+	Name        string   `@Ident`
+	Args        []string `"("@Ident*")"`
+	Body        Lua      `@@"end"`
+}
+type StatementVariable struct {
 	Variable  Variable  `@@`
 	Expresion Expresion `@@`
 }
@@ -54,8 +63,8 @@ type Value struct {
 }
 
 type FunctionCall struct {
-	Name string          `@Ident"("`
-	Args []*ParmFunction `@@*")"`
+	Name string          `@Ident`
+	Args []*ParmFunction `"("@@*")"`
 }
 
 type ParmFunction struct {
@@ -63,6 +72,30 @@ type ParmFunction struct {
 	Coma *string    `","?`
 }
 
+func (e *StatementFunction) toString() string {
+	res := ""
+	res += e.Declaration
+	res += " "
+	res += e.Name
+	res += "("
+	for _, v := range e.Args {
+		res += v
+	}
+	res += "){"
+	res += "\n"
+	res += e.Body.toString()
+	res += "\n}"
+	return res
+}
+func (e *Statement) toString() string {
+	if e.StatementVariable != nil {
+		return e.StatementVariable.toString()
+	}
+	if e.StatementFunction != nil {
+		return e.StatementFunction.toString()
+	}
+	return "<undefined>"
+}
 func (e *Lua) toString() string {
 	res := ""
 	for i, ex := range e.Statements {
@@ -71,6 +104,7 @@ func (e *Lua) toString() string {
 			res += "\n"
 		}
 	}
+	res += "\n"
 	for i, ex := range e.Expresions {
 		res += ex.toString()
 		if i != len(e.Expresions)-1 {
@@ -89,7 +123,7 @@ func (e *Variable) toString() string {
 	return res
 }
 
-func (e *Statement) toString() string {
+func (e *StatementVariable) toString() string {
 	res := ""
 	res += e.Variable.toString() + "="
 	res += e.Expresion.toString()

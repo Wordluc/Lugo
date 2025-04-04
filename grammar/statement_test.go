@@ -148,7 +148,7 @@ func TestTableDeclaration(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`local a={"cioa",nome="luica",}
+		`local a={("cioa"),nome=("luica"),}
 		local a=(" fklsd")`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
@@ -203,17 +203,17 @@ func TestTable(t *testing.T) {
 				return "kebab" 
 			end
 		}
+		return persona
 	`)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
 	res := tr.toString()
 	ex :=
-		`local a=pippo.prova
-		local a=pippo[("cioa")]
-		local a=pippo[(getName())]
-		local a=pippo[(cioa)]
-		local a=pippo[(3)]`
+		`local persona={nome=("luca"),eta=(12),getFood=function (){
+		return ("kebab")
+		},}
+		return (persona)`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 	ex += "\n"

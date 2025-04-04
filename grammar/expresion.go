@@ -1,12 +1,12 @@
 package grammar
 
 type Expresion struct {
-	KeyWord                    *KeyWordNoValue             `(?!@@)(`
-	MathExpresion              *MathExpresion              `@@`
+	KeyWord                    *KeyWordNoExpresion         `(?!@@)(`
+	FunctionExpresion          *ExpresionFunction          `@@`
 	TableExpresion             *TableDeclaration           `|@@`
 	TableRetriveWithBracket    *TableRetriveWithBracket    `|@@`
 	TableRetriveWithoutBracket *TableRetriveWithoutBracket `|@@`
-	BaseValue                  *Value                      `|@@)`
+	MathExpresion              *MathExpresion              `|@@)`
 }
 
 type TableRetriveWithBracket struct {
@@ -24,9 +24,9 @@ type TableDeclaration struct {
 }
 
 type TableEntry struct {
-	Name  *string `(@Ident "=")?`
-	Value *Value  `@@`
-	Come  string  `","?`
+	Name  *string    `(@Ident "=")?`
+	Value *Expresion `@@`
+	Come  string     `","?`
 }
 type MathExpresion struct {
 	HExp *HExpresion   `@@`  // Highest level: Terms
@@ -39,7 +39,7 @@ type HExpresion struct {
 }
 
 type LExpresion struct {
-	Operator string      `@("+" | "-")`
+	Operator string      `@("+" | "-" | "or" "and")`
 	HExp     *HExpresion `@@`
 }
 
@@ -74,4 +74,12 @@ type FunctionCall struct {
 type ParmFunction struct {
 	Parm *Expresion `@@`
 	Coma *string    `","?`
+}
+
+type ExpresionFunction struct {
+	Declaration string           `@"function"`
+	Args        []string         `"("@Ident*")"`
+	Body        Lua              `@@`
+	Return      *ReturnExpresion `@@?`
+	End         string           `"end"!`
 }

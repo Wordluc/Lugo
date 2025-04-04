@@ -1,8 +1,10 @@
 package grammar
 
 type Statement struct {
-	StatementFunction *StatementFunction `@@`
-	StatementVariable *StatementVariable `|@@`
+	NoStatement       *KeyWordNoStatement `(?!@@)(`
+	StatementFunction *StatementFunction  `@@`
+	StatementVariable *StatementVariable  `|@@`
+	ReturnExpresion   *ReturnExpresion    `|@@)`
 }
 type StatementFunction struct {
 	Declaration string   `@"function"`

@@ -3,6 +3,9 @@ package grammar
 import "fmt"
 
 func (e *Expresion) toString() string {
+	if e.FunctionExpresion != nil {
+		return e.FunctionExpresion.toString()
+	}
 	if e.TableExpresion != nil {
 		return e.TableExpresion.toString()
 	}
@@ -118,17 +121,17 @@ func (e *TableRetriveWithoutBracket) toString() string {
 	return res
 }
 
-//func (e *ExpresionFunction) toString() string {
-//	res := ""
-//	res += e.Declaration
-//	res += " "
-//	res += "("
-//	for _, v := range e.Args {
-//		res += v
-//	}
-//	res += "){"
-//	res += "\n"
-//	res += e.Body.toString()
-//	res += "\n}"
-//	return res
-//}
+func (e *ExpresionFunction) toString() string {
+	res := ""
+	res += e.Declaration
+	res += " "
+	res += "("
+	for _, v := range e.Args {
+		res += v
+	}
+	res += "){"
+	res += ""
+	res += e.Body.toString()
+	res += "}"
+	return res
+}

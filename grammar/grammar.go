@@ -9,6 +9,14 @@ type Lua struct {
 	Expresions []*Expresion `@@*` //4+2
 }
 
+// Define keyword that hasnt be valuated has expresions
+type KeyWordNoValue struct {
+	KeyWord *string `"end"`
+}
+type KeyWord struct {
+	KeyWord *string `@"end"`
+}
+
 func (e *Lua) toString() string {
 	res := ""
 	for i, ex := range e.Statements {

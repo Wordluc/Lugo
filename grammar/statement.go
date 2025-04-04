@@ -1,15 +1,14 @@
 package grammar
 
 type Statement struct {
-	StatementVariable *StatementVariable `@@`
-	StatementFunction *StatementFunction `|@@`
+	StatementFunction *StatementFunction `@@`
+	StatementVariable *StatementVariable `|@@`
 }
-
 type StatementFunction struct {
 	Declaration string   `@"function"`
 	Name        string   `@Ident`
 	Args        []string `"("@Ident*")"`
-	Body        Lua      `@@"end"`
+	Body        Lua      `@@"end"!`
 }
 
 type StatementVariable struct {

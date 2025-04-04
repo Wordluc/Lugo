@@ -2,6 +2,22 @@ package grammar
 
 import "fmt"
 
+func (e *Expresion) toString() string {
+	if e.TableExpresion != nil {
+		return e.TableExpresion.toString()
+	}
+	if e.MathExpresion != nil {
+		return e.MathExpresion.toString()
+	}
+	if e.TableRetriveWithoutBracket != nil {
+		return e.TableRetriveWithoutBracket.toString()
+	}
+	if e.TableRetriveWithBracket != nil {
+		return e.TableRetriveWithBracket.toString()
+	}
+	return "<undefined>"
+}
+
 func (e *FunctionCall) toString() string {
 	res := ""
 	res += e.Name + "("
@@ -13,6 +29,9 @@ func (e *FunctionCall) toString() string {
 }
 
 func (e *Value) toString() string {
+	if e.Identifier != nil {
+		return *e.Identifier
+	}
 	if e.FunctionCall != nil {
 		return e.FunctionCall.toString()
 	}
@@ -38,7 +57,7 @@ func (e *BaseValueExp) toString() string {
 	return ""
 }
 
-func (e *Expresion) toString() string {
+func (e *MathExpresion) toString() string {
 	res := e.HExp.toString()
 	for _, op := range e.LExp {
 		res += " " + op.Operator + " " + op.HExp.toString()
@@ -63,3 +82,53 @@ func (e *Variable) toString() string {
 	res += e.Name
 	return res
 }
+
+func (e *TableDeclaration) toString() string {
+	res := ""
+	res += "{"
+	for _, v := range e.Entries {
+		res += v.toString() + ","
+	}
+	res += "}"
+	return res
+}
+
+func (e *TableEntry) toString() string {
+	res := ""
+	if e.Name != nil {
+		res += *e.Name
+		res += "="
+	}
+	res += e.Value.toString()
+	return res
+}
+func (e *TableRetriveWithBracket) toString() string {
+	res := ""
+	res += e.TableName
+	res += "["
+	res += e.Index.toString()
+	res += "]"
+	return res
+}
+func (e *TableRetriveWithoutBracket) toString() string {
+	res := ""
+	res += *e.TableName
+	res += "."
+	res += *e.Index
+	return res
+}
+
+//func (e *ExpresionFunction) toString() string {
+//	res := ""
+//	res += e.Declaration
+//	res += " "
+//	res += "("
+//	for _, v := range e.Args {
+//		res += v
+//	}
+//	res += "){"
+//	res += "\n"
+//	res += e.Body.toString()
+//	res += "\n}"
+//	return res
+//}

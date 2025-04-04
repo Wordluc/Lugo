@@ -12,12 +12,6 @@ func (e *Expresion) toString() string {
 	if e.MathExpresion != nil {
 		return e.MathExpresion.toString()
 	}
-	if e.TableRetriveWithoutBracket != nil {
-		return e.TableRetriveWithoutBracket.toString()
-	}
-	if e.TableRetriveWithBracket != nil {
-		return e.TableRetriveWithBracket.toString()
-	}
 	return "<undefined>"
 }
 
@@ -32,6 +26,12 @@ func (e *FunctionCall) toString() string {
 }
 
 func (e *Value) toString() string {
+	if e.TableRetriveWithoutBracket != nil {
+		return e.TableRetriveWithoutBracket.toString()
+	}
+	if e.TableRetriveWithBracket != nil {
+		return e.TableRetriveWithBracket.toString()
+	}
 	if e.Identifier != nil {
 		return *e.Identifier
 	}

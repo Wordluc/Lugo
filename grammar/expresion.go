@@ -1,12 +1,10 @@
 package grammar
 
 type Expresion struct {
-	KeyWord                    *KeyWordNoExpresion         `(?!@@)(`
-	LambdaFunctionExpresion    *ExpresionFunction          `@@`
-	TableExpresion             *TableDeclaration           `|@@`
-	TableRetriveWithBracket    *TableRetriveWithBracket    `|@@`
-	TableRetriveWithoutBracket *TableRetriveWithoutBracket `|@@`
-	MathExpresion              *MathExpresion              `|@@)`
+	KeyWord                 *KeyWordNoExpresion `(?!@@)(`
+	LambdaFunctionExpresion *ExpresionFunction  `@@`
+	TableExpresion          *TableDeclaration   `|@@`
+	MathExpresion           *MathExpresion      `|@@)`
 }
 
 type TableRetriveWithBracket struct {
@@ -59,11 +57,13 @@ type Variable struct {
 }
 
 type Value struct {
-	Number       *float32      `@Float | @Int`
-	FunctionCall *FunctionCall `| @@`
-	String       *string       `| @String`
-	Bool         *bool         `| @("true" | "false") `
-	Identifier   *string       `|@Ident`
+	Number                     *float32                    `@Float | @Int`
+	FunctionCall               *FunctionCall               `| @@`
+	String                     *string                     `| @String`
+	Bool                       *bool                       `| @("true" | "false") `
+	TableRetriveWithoutBracket *TableRetriveWithoutBracket `|@@`
+	TableRetriveWithBracket    *TableRetriveWithBracket    `|@@`
+	Identifier                 *string                     `|@Ident`
 }
 
 type FunctionCall struct {

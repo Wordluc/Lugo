@@ -176,11 +176,11 @@ func TestTableRetrive(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`local a=pippo.prova
-		local a=pippo[("cioa")]
-		local a=pippo[(getName())]
-		local a=pippo[(cioa)]
-		local a=pippo[(3)]`
+		`local a=(pippo.prova)
+		local a=(pippo[("cioa")])
+		local a=(pippo[(getName())])
+		local a=(pippo[(cioa)])
+		local a=(pippo[(3)])`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 	ex += "\n"

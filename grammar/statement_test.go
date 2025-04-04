@@ -189,6 +189,38 @@ func TestTableRetrive(t *testing.T) {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "RetriveTable", ex+"|", res+"|")
 	}
 }
+func TestLabdaFunction(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`
+		prova=function(nome)
+			local boo=nome
+			local eta={12,43+3}
+			return eta
+		end
+		return persona
+	`)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`prova=function (nome){local boo=(nome)
+		local eta={(12),(43) + (3),}
+		return (eta)
+		}
+		return (persona)`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+	ex += "\n"
+
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "LabdaFunction", ex+"|", res+"|")
+	}
+}
 func TestTableWithLabdaFunction(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
@@ -219,38 +251,6 @@ func TestTableWithLabdaFunction(t *testing.T) {
 	ex += "\n"
 
 	if res != ex {
-		t.Fatalf("error %v expected: \n%v, got:\n %v", "RetriveTable", ex+"|", res+"|")
-	}
-}
-func TestLabdaFunction(t *testing.T) {
-	parser, err := participle.Build[Lua]()
-	if err != nil {
-		print(err.Error())
-	}
-	tr, err := parser.ParseString("prova",
-		`
-		prova=function(nome)
-			local boo=nome
-			local eta={12,43+3}
-			return eta
-		end
-		return persona
-	`)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	res := tr.toString()
-	ex :=
-		`prova=function (nome){local boo=(nome)
-		local eta={(12),(43) + (3),}
-		return (eta)
-		}
-		return (persona)`
-	res = strings.ReplaceAll(res, "\u0009", "")
-	ex = strings.ReplaceAll(ex, "\u0009", "")
-	ex += "\n"
-
-	if res != ex {
-		t.Fatalf("error %v expected: \n%v, got:\n %v", "RetriveTable", ex+"|", res+"|")
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "LabdFuntionInTable", ex+"|", res+"|")
 	}
 }

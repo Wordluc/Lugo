@@ -2,7 +2,7 @@ package grammar
 
 type Expresion struct {
 	KeyWord                    *KeyWordNoExpresion         `(?!@@)(`
-	FunctionExpresion          *ExpresionFunction          `@@`
+	LambdaFunctionExpresion    *ExpresionFunction          `@@`
 	TableExpresion             *TableDeclaration           `|@@`
 	TableRetriveWithBracket    *TableRetriveWithBracket    `|@@`
 	TableRetriveWithoutBracket *TableRetriveWithoutBracket `|@@`

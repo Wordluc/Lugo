@@ -231,7 +231,7 @@ func TestLabdaFunction(t *testing.T) {
 		`
 		prova=function(nome)
 			local boo=nome
-			local eta={12,43+3}
+			local eta={12,43}
 			return eta
 		end
 		return persona
@@ -241,10 +241,9 @@ func TestLabdaFunction(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`prova=function (nome){local boo=(nome)
-		local eta={(12),(43) + (3),}
-		return (eta)
-		}
+		`local persona={nome=("luca"),eta=(12),getFood=function (){
+		return ("kebab")
+		},}
 		return (persona)`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")

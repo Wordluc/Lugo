@@ -6,6 +6,7 @@ end
 cioa = {
 	ciao = "afklsdjfkl",
 	"",
+	3 + 4,
 	prova = function()
 
 	end

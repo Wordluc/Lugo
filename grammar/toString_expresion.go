@@ -3,8 +3,8 @@ package grammar
 import "fmt"
 
 func (e *Expresion) toString() string {
-	if e.FunctionExpresion != nil {
-		return e.FunctionExpresion.toString()
+	if e.LambdaFunctionExpresion != nil {
+		return e.LambdaFunctionExpresion.toString()
 	}
 	if e.TableExpresion != nil {
 		return e.TableExpresion.toString()

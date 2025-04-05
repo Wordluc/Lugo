@@ -56,7 +56,7 @@ func (e *BaseValueExp) toString() string {
 		res += e.Base.toString()
 	}
 	if e.Expression != nil {
-		res += e.Expression.toString()
+		res += "(" + e.Expression.toString() + ")"
 	}
 	return res
 }

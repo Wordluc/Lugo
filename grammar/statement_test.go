@@ -12,7 +12,7 @@ func TestSimpleMathOperationWithLocal(t *testing.T) {
 	if err != nil {
 		print(err.Error())
 	}
-	tr, err := parser.ParseString("prova", "local a=3*4+2/4+1")
+	tr, err := parser.ParseString("prova", "local a=3*(4+2)/4+1")
 	if err != nil {
 		print(err.Error())
 	}

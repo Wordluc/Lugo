@@ -44,8 +44,8 @@ type LExpresion struct {
 }
 
 type BaseValueExp struct {
-	Base       *Value     `(@@`
-	Expression *Expresion `| "(" @@ ")")` // Parentheses
+	Base       *Value         `@@`
+	Expression *MathExpresion `| "(" @@ ")"` // Parentheses
 }
 
 type Variable struct {

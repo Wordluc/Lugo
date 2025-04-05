@@ -17,7 +17,7 @@ func TestSimpleMathOperationWithLocal(t *testing.T) {
 		print(err.Error())
 	}
 	res := tr.toString()
-	ex := "local a=(3 * 4) + (2 / 4) + (1)\n"
+	ex := "local a=(3 * (4)) + (2 / (4)) + (1)\n"
 	if res != ex {
 		t.Fatalf("error %v expected: %v, got: %v", "simpleMathOperationWithLocal", ex, res)
 	}
@@ -32,9 +32,24 @@ func TestSimpleMathOperationWithoutLocal(t *testing.T) {
 		print(err.Error())
 	}
 	res := tr.toString()
-	ex := "a=(3 * 4) + (4)\n"
+	ex := "a=(3 * (4)) + (4)\n"
 	if res != ex {
 		t.Fatalf("error %v expected: %v, got: %v", "simpleMathWithoutLocal", ex, res)
+	}
+}
+func TestMathWithMultAndDivide(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova", "a=3*4*4/4")
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex := "a=(3 * (4 * (4 / (4))))\n"
+	if res != ex {
+		t.Fatalf("error %v expected: %v, got: %v", "TestMathWithMultAndDivide", ex, res)
 	}
 }
 func TestSimpleCallFuncWithParms(t *testing.T) {
@@ -62,7 +77,7 @@ func TestBlockStatement(t *testing.T) {
 		print(err.Error())
 	}
 	res := tr.toString()
-	ex := "a=(2) + (2 * 4) + (prova((2) + (3),(3),))\nlocal s=(3)\n"
+	ex := "a=(2) + (2 * (4)) + (prova((2) + (3),(3),))\nlocal s=(3)\n"
 	if res != ex {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "BlocStatement", ex, res)
 	}

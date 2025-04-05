@@ -51,27 +51,39 @@ func (e *Value) toString() string {
 }
 
 func (e *BaseValueExp) toString() string {
+	res := ""
 	if e.Base != nil {
-		return e.Base.toString()
+		res += e.Base.toString()
 	}
 	if e.Expression != nil {
-		return e.Expression.toString()
+		res += e.Expression.toString()
 	}
-	return ""
+	return res
 }
 
 func (e *MathExpresion) toString() string {
 	res := e.HExp.toString()
 	for _, op := range e.LExp {
-		res += " " + op.Operator + " " + op.HExp.toString()
+		res += op.toString()
 	}
 	return res
 }
-
-func (t *HExpresion) toString() string {
-	res := "(" + t.BaseValue.toString()
-	if t.Right != nil {
-		res += " " + t.Right.Operator + " " + t.Right.BaseValue.toString()
+func (e *LExpresion) toString() string {
+	res := ""
+	res += " " + e.Operator + " "
+	res += e.HExp.toString()
+	return res
+}
+func (t *TermExpresion) toString() string {
+	res := "("
+	if t.LeftTerm != nil {
+		res += t.LeftTerm.toString()
+	}
+	if t.Operator != nil {
+		res += " " + *t.Operator
+	}
+	if t.RightTerm != nil {
+		res += " " + t.RightTerm.toString()
 	}
 	res += ")"
 	return res

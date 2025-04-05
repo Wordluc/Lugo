@@ -26,29 +26,26 @@ type TableEntry struct {
 	Value *Expresion `@@`
 	Come  string     `","?`
 }
+
 type MathExpresion struct {
-	HExp *HExpresion   `@@`  // Highest level: Terms
-	LExp []*LExpresion `@@*` // Lower precedence: Addition & Subtraction
+	HExp *TermExpresion `@@`  // Highest level: Terms
+	LExp []*LExpresion  `@@*` // Lower precedence: Addition & Subtraction
 }
 
-type HExpresion struct {
-	BaseValue *BaseValueExp `@@`
-	Right     *OpFactor     `@@*` // Lower precedence: Multiplication & Division
+type TermExpresion struct {
+	LeftTerm  *BaseValueExp  `@@`
+	Operator  *string        `(@("/"|"*")` // Multiplication or division
+	RightTerm *TermExpresion `@@)?`
 }
 
 type LExpresion struct {
-	Operator string      `@("+" | "-" | "or" "and")`
-	HExp     *HExpresion `@@`
-}
-
-type OpFactor struct {
-	Operator  string        `@("/"|"*")` // Multiplication or division
-	BaseValue *BaseValueExp `@@`
+	Operator string         `@("+" | "-" | "or" "and")`
+	HExp     *TermExpresion `@@`
 }
 
 type BaseValueExp struct {
-	Base       *Value     `@@`
-	Expression *Expresion `| "(" @@ ")"` // Parentheses
+	Base       *Value     `(@@`
+	Expression *Expresion `| "(" @@ ")")` // Parentheses
 }
 
 type Variable struct {

@@ -1,4 +1,4 @@
-package grammar
+package parser
 
 type Statement struct {
 	NoStatement       *KeyWordNoStatement `(?!@@)(`

@@ -1,4 +1,4 @@
-package grammar
+package parser
 
 type Expresion struct {
 	KeyWord                 *KeyWordNoExpresion `(?!@@)(`

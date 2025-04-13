@@ -1,4 +1,4 @@
-package grammar
+package parser
 
 type ToString interface {
 	toString() string

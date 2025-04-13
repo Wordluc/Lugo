@@ -41,8 +41,11 @@ func (e *Value) toString() string {
 	if e.String != nil {
 		return *e.String
 	}
-	if e.Number != nil {
-		return fmt.Sprint(*e.Number)
+	if e.Int != nil {
+		return fmt.Sprint(*e.Int)
+	}
+	if e.Float != nil {
+		return fmt.Sprint(*e.Float)
 	}
 	if e.Bool != nil {
 		return fmt.Sprint(*e.Bool)

@@ -3,6 +3,8 @@ print(a)
 function lucaa()
 end
 
+local a = 3
+print(a)
 cioa = {
 	ciao = "afklsdjfkl",
 	"",

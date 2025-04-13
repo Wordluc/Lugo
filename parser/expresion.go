@@ -39,7 +39,7 @@ type TermExpression struct {
 }
 
 type LExpression struct {
-	Operator string          `@("+" | "-" | "or" | "and")`
+	Operator string          `@("+" | "-" | "or" | "and" | ".." )`
 	HExp     *TermExpression `@@`
 }
 
@@ -54,7 +54,8 @@ type Variable struct {
 }
 
 type Value struct {
-	Number                      *float32                     `@Float | @Int`
+	Int                         *int                         `@Int`
+	Float                       *float32                     `@Float`
 	FunctionCall                *FunctionCall                `| @@`
 	String                      *string                      `| @String`
 	Bool                        *bool                        `| @("true" | "false") `

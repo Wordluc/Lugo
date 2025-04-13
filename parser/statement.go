@@ -4,7 +4,7 @@ type Statement struct {
 	NoStatement       *KeyWordNoStatement `(?!@@)(`
 	StatementFunction *StatementFunction  `@@`
 	StatementVariable *StatementVariable  `|@@`
-	ReturnExpresion   *ReturnExpresion    `|@@)`
+	ReturnExpression  *ReturnExpression   `|@@)`
 }
 type StatementFunction struct {
 	Declaration string   `@"function"`
@@ -14,6 +14,6 @@ type StatementFunction struct {
 }
 
 type StatementVariable struct {
-	Variable  Variable  `@@`
-	Expresion Expresion `@@`
+	Variable   Variable   `@@`
+	Expression Expression `@@`
 }

@@ -1,18 +1,18 @@
 package parser
 
-type Expresion struct {
-	KeyWord                 *KeyWordNoExpresion `(?!@@)(`
-	LambdaFunctionExpresion *ExpresionFunction  `@@`
-	TableExpresion          *TableDeclaration   `|@@`
-	MathExpresion           *MathExpresion      `|@@)`
+type Expression struct {
+	KeyWord                  *KeyWordNoExpression `(?!@@)(`
+	LambdaFunctionExpression *ExpressionFunction  `@@`
+	TableExpression          *TableDeclaration    `|@@`
+	MathExpression           *MathExpression      `|@@)`
 }
 
-type TableRetriveWithBracket struct {
-	TableName string     `@Ident"["`
-	Index     *Expresion `@@ "]"` // Parentheses
+type TableRetrieveWithBracket struct {
+	TableName string      `@Ident"["`
+	Index     *Expression `@@ "]"` // Parentheses
 }
 
-type TableRetriveWithoutBracket struct {
+type TableRetrieveWithoutBracket struct {
 	TableName *string `@Ident "."`
 	Index     *string ` @Ident`
 }
@@ -22,30 +22,30 @@ type TableDeclaration struct {
 }
 
 type TableEntry struct {
-	Name  *string    `(@Ident "=")?`
-	Value *Expresion `@@`
-	Come  string     `","?`
+	Name  *string     `(@Ident "=")?`
+	Value *Expression `@@`
+	Come  string      `","?`
 }
 
-type MathExpresion struct {
-	HExp *TermExpresion `@@`  // Highest level: Terms
-	LExp []*LExpresion  `@@*` // Lower precedence: Addition & Subtraction
+type MathExpression struct {
+	HExp *TermExpression `@@`  // Highest level: Terms
+	LExp []*LExpression  `@@*` // Lower precedence: Addition & Subtraction
 }
 
-type TermExpresion struct {
-	LeftTerm  *BaseValueExp  `@@`
-	Operator  *string        `(@("/"|"*")` // Multiplication or division
-	RightTerm *TermExpresion `@@)?`
+type TermExpression struct {
+	LeftTerm  *BaseValueExp   `@@`
+	Operator  *string         `(@("/"|"*")` // Multiplication or division
+	RightTerm *TermExpression `@@)?`
 }
 
-type LExpresion struct {
-	Operator string         `@("+" | "-" | "or" | "and")`
-	HExp     *TermExpresion `@@`
+type LExpression struct {
+	Operator string          `@("+" | "-" | "or" | "and")`
+	HExp     *TermExpression `@@`
 }
 
 type BaseValueExp struct {
-	Base       *Value         `@@`
-	Expression *MathExpresion `| "(" @@ ")"` // Parentheses
+	Base       *Value          `@@`
+	Expression *MathExpression `| "(" @@ ")"` // Parentheses
 }
 
 type Variable struct {
@@ -54,29 +54,29 @@ type Variable struct {
 }
 
 type Value struct {
-	Number                     *float32                    `@Float | @Int`
-	FunctionCall               *FunctionCall               `| @@`
-	String                     *string                     `| @String`
-	Bool                       *bool                       `| @("true" | "false") `
-	TableRetriveWithoutBracket *TableRetriveWithoutBracket `|@@`
-	TableRetriveWithBracket    *TableRetriveWithBracket    `|@@`
-	Identifier                 *string                     `|@Ident`
+	Number                      *float32                     `@Float | @Int`
+	FunctionCall                *FunctionCall                `| @@`
+	String                      *string                      `| @String`
+	Bool                        *bool                        `| @("true" | "false") `
+	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
+	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`
+	Identifier                  *string                      `|@Ident`
 }
 
 type FunctionCall struct {
-	Name string          `@Ident`
-	Args []*ParmFunction `"("@@*")"`
+	Name string           `@Ident`
+	Args []*ParamFunction `"("@@*")"`
 }
 
-type ParmFunction struct {
-	Parm *Expresion `@@`
-	Coma *string    `","?`
+type ParamFunction struct {
+	Param *Expression `@@`
+	Coma  *string     `","?`
 }
 
-type ExpresionFunction struct {
-	Declaration string           `@"function"`
-	Args        []string         `"("@Ident*")"`
-	Body        Lua              `@@`
-	Return      *ReturnExpresion `@@?`
-	End         string           `"end"!`
+type ExpressionFunction struct {
+	Declaration string            `@"function"`
+	Args        []string          `"("@Ident*")"`
+	Body        Lua               `@@`
+	Return      *ReturnExpression `@@?`
+	End         string            `"end"!`
 }

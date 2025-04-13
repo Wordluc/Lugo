@@ -2,15 +2,15 @@ package parser
 
 import "fmt"
 
-func (e *Expresion) toString() string {
-	if e.LambdaFunctionExpresion != nil {
-		return e.LambdaFunctionExpresion.toString()
+func (e *Expression) toString() string {
+	if e.LambdaFunctionExpression != nil {
+		return e.LambdaFunctionExpression.toString()
 	}
-	if e.TableExpresion != nil {
-		return e.TableExpresion.toString()
+	if e.TableExpression != nil {
+		return e.TableExpression.toString()
 	}
-	if e.MathExpresion != nil {
-		return e.MathExpresion.toString()
+	if e.MathExpression != nil {
+		return e.MathExpression.toString()
 	}
 	return "<undefined>"
 }
@@ -26,11 +26,11 @@ func (e *FunctionCall) toString() string {
 }
 
 func (e *Value) toString() string {
-	if e.TableRetriveWithoutBracket != nil {
-		return e.TableRetriveWithoutBracket.toString()
+	if e.TableRetrieveWithoutBracket != nil {
+		return e.TableRetrieveWithoutBracket.toString()
 	}
-	if e.TableRetriveWithBracket != nil {
-		return e.TableRetriveWithBracket.toString()
+	if e.TableRetrieveWithBracket != nil {
+		return e.TableRetrieveWithBracket.toString()
 	}
 	if e.Identifier != nil {
 		return *e.Identifier
@@ -61,20 +61,20 @@ func (e *BaseValueExp) toString() string {
 	return res
 }
 
-func (e *MathExpresion) toString() string {
+func (e *MathExpression) toString() string {
 	res := e.HExp.toString()
 	for _, op := range e.LExp {
 		res += op.toString()
 	}
 	return res
 }
-func (e *LExpresion) toString() string {
+func (e *LExpression) toString() string {
 	res := ""
 	res += " " + e.Operator + " "
 	res += e.HExp.toString()
 	return res
 }
-func (t *TermExpresion) toString() string {
+func (t *TermExpression) toString() string {
 	res := "("
 	if t.LeftTerm != nil {
 		res += t.LeftTerm.toString()
@@ -117,7 +117,7 @@ func (e *TableEntry) toString() string {
 	res += e.Value.toString()
 	return res
 }
-func (e *TableRetriveWithBracket) toString() string {
+func (e *TableRetrieveWithBracket) toString() string {
 	res := ""
 	res += e.TableName
 	res += "["
@@ -125,7 +125,7 @@ func (e *TableRetriveWithBracket) toString() string {
 	res += "]"
 	return res
 }
-func (e *TableRetriveWithoutBracket) toString() string {
+func (e *TableRetrieveWithoutBracket) toString() string {
 	res := ""
 	res += *e.TableName
 	res += "."
@@ -133,7 +133,7 @@ func (e *TableRetriveWithoutBracket) toString() string {
 	return res
 }
 
-func (e *ExpresionFunction) toString() string {
+func (e *ExpressionFunction) toString() string {
 	res := ""
 	res += e.Declaration
 	res += " "

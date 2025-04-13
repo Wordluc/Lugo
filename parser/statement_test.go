@@ -17,7 +17,7 @@ func TestSimpleMathOperationWithLocal(t *testing.T) {
 		print(err.Error())
 	}
 	res := tr.toString()
-	ex := "local a=(3 * (4)) + (2 / (4)) + (1)\n"
+	ex := "local a=(3 * (((4) + (2)) / (4))) + (1)\n"
 	if res != ex {
 		t.Fatalf("error %v expected: %v, got: %v", "simpleMathOperationWithLocal", ex, res)
 	}
@@ -52,7 +52,7 @@ func TestMathWithMultAndDivide(t *testing.T) {
 		t.Fatalf("error %v expected: %v, got: %v", "TestMathWithMultAndDivide", ex, res)
 	}
 }
-func TestSimpleCallFuncWithParms(t *testing.T) {
+func TestSimpleCallFuncWithParams(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
 		print(err.Error())
@@ -173,7 +173,7 @@ func TestTableDeclaration(t *testing.T) {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationTable", ex+"|", res+"|")
 	}
 }
-func TestTableRetrive(t *testing.T) {
+func TestTableRetrieve(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
 		print(err.Error())
@@ -201,7 +201,7 @@ func TestTableRetrive(t *testing.T) {
 	ex += "\n"
 
 	if res != ex {
-		t.Fatalf("error %v expected: \n%v, got:\n %v", "RetriveTable", ex+"|", res+"|")
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "RetrieveTable", ex+"|", res+"|")
 	}
 }
 func TestLabdaFunction(t *testing.T) {
@@ -266,6 +266,6 @@ func TestTableWithLabdaFunction(t *testing.T) {
 	ex += "\n"
 
 	if res != ex {
-		t.Fatalf("error %v expected: \n%v, got:\n %v", "LabdFuntionInTable", ex+"|", res+"|")
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "LabdFunctionInTable", ex+"|", res+"|")
 	}
 }

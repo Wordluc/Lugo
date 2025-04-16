@@ -1,6 +1,8 @@
 package evaluator
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type TypeValue string
 
@@ -126,9 +128,11 @@ func EvalInts(a *Int, op string, b *Int) (*Int, error) {
 }
 
 type Function struct {
+	Environment
+	Body Program
 }
 
-func (f *Function) Call(...Value) (Value, error) {
-	//TODO: to implement
-	return nil, nil
+func (f *Function) Call(params ...Value) (Value, error) {
+	panic("need to assign paraments")
+	return nil, f.Body.Run()
 }

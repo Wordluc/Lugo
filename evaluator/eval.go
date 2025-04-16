@@ -17,6 +17,11 @@ func (e *Environment) AddVariable(name string, v Value) error {
 	return nil
 }
 
+func (e *Environment) AddFunction(name string, v Function) error {
+	e.Function[name] = v
+	return nil
+}
+
 func (e *Environment) GetVariable(name string) (Value, error) {
 	return e.Variables[name], nil
 }
@@ -26,20 +31,32 @@ type Program struct {
 	parser.Lua
 }
 
-func NewEval(tree parser.Lua) Program {
-	return Program{
+func NewEval(tree parser.Lua) *Program {
+	return &Program{
 		NewEnvironment(),
 		tree,
 	}
 }
 func (p *Program) Run() error {
 	for _, st := range p.Lua.Statements {
-		if v := st.StatementVariable; v != nil {
+		switch {
+		case st.StatementVariable != nil:
+			v := st.StatementVariable
 			value, e := p.EvalExp(v.Expression)
 			if e != nil {
 				return e
 			}
 			if e := p.Environment.AddVariable(v.Variable.Name, value); e != nil {
+				return e
+			}
+		case st.StatementFunction != nil:
+			v := st.StatementFunction
+			body := NewEval(v.Body)
+			f := Function{
+				NewEnvironment(),
+				*body,
+			}
+			if e := p.Environment.AddFunction(v.Name, f); e != nil {
 				return e
 			}
 		}

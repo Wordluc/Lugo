@@ -24,7 +24,7 @@ func (p *Program) EvalTempMath(exp *parser.TermExpression) (Value, error) {
 	return left.EvalOp(op, right)
 }
 
-func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //functioncall,TableRetrieveWithoutBracket,TableRetrieveWithBracket miss
+func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //TableRetrieveWithoutBracket,TableRetrieveWithBracket miss
 	switch {
 	case exp.Int != nil:
 		return &Int{
@@ -44,6 +44,8 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //functioncall,T
 		}, nil
 	case exp.Identifier != nil:
 		return p.Environment.GetVariable(*exp.Identifier)
+	case exp.FunctionCall != nil:
+		return p.EvalFunctionCall(exp.FunctionCall)
 	}
 	return nil, nil
 }

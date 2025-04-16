@@ -124,3 +124,11 @@ func EvalInts(a *Int, op string, b *Int) (*Int, error) {
 	}
 	return &Int{value}, nil
 }
+
+type Function struct {
+}
+
+func (f *Function) Call(...Value) (Value, error) {
+	//TODO: to implement
+	return nil, nil
+}

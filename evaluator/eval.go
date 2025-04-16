@@ -4,6 +4,7 @@ import "Lugo/parser"
 
 type Environment struct {
 	Variables map[string]Value
+	Function  map[string]Function
 }
 
 func NewEnvironment() Environment {
@@ -47,5 +48,8 @@ func (p *Program) Run() error {
 }
 
 func (p *Program) EvalExp(exp parser.Expression) (Value, error) {
+	if m := exp.MathExpression; m != nil {
+		return p.EvalMath(m)
+	}
 	return nil, nil
 }

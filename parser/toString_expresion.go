@@ -142,11 +142,15 @@ func (e *ExpressionFunction) toString() string {
 	res += " "
 	res += "("
 	for _, v := range e.Args {
-		res += v
+		res += v.toString()
 	}
 	res += "){"
 	res += ""
 	res += e.Body.toString()
 	res += "}"
 	return res
+}
+
+func (e *ParamFunctionDeclaration) toString() string {
+	return fmt.Sprint(e.Param, ",")
 }

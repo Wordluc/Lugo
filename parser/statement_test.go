@@ -223,7 +223,7 @@ func TestLabdaFunction(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`prova=function (nome){local boo=(nome)
+		`prova=function (nome,){local boo=(nome)
 		local eta={(12),(43) + (3),}
 		return (eta)
 		}
@@ -267,5 +267,38 @@ func TestTableWithLabdaFunction(t *testing.T) {
 
 	if res != ex {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "LabdFunctionInTable", ex+"|", res+"|")
+	}
+}
+func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`
+	function prova(a,b)
+	local a=3+4
+	local b=3+4
+	prova()
+	prova()
+	end
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`function prova(a,b,){
+		local a=(3) + (4)
+		local b=(3) + (4)
+		(prova())
+		(prova())
+	}`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+	ex += "\n"
+
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
 	}
 }

@@ -9,7 +9,7 @@ func (e *StatementFunction) toString() string {
 	res += e.Name
 	res += "("
 	for _, v := range e.Args {
-		res += v
+		res += v.toString()
 	}
 	res += "){"
 	res += "\n"
@@ -18,7 +18,7 @@ func (e *StatementFunction) toString() string {
 	return res
 }
 
-func (e *ParamFunction) toString() string {
+func (e *ParamFunctionCall) toString() string {
 	return fmt.Sprint(e.Param.toString(), ",")
 }
 

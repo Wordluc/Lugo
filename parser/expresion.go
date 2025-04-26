@@ -65,19 +65,23 @@ type Value struct {
 }
 
 type FunctionCall struct {
-	Name string           `@Ident`
-	Args []*ParamFunction `"("@@*")"`
+	Name string               `@Ident`
+	Args []*ParamFunctionCall `"("@@*")"`
 }
 
-type ParamFunction struct {
+type ParamFunctionCall struct {
 	Param *Expression `@@`
 	Coma  *string     `","?`
 }
 
 type ExpressionFunction struct {
-	Declaration string            `@"function"`
-	Args        []string          `"("@Ident*")"`
-	Body        Lua               `@@`
-	Return      *ReturnExpression `@@?`
-	End         string            `"end"!`
+	Declaration string                      `@"function"`
+	Args        []*ParamFunctionDeclaration `"("@@*")"`
+	Body        Lua                         `@@`
+	Return      *ReturnExpression           `@@?`
+	End         string                      `"end"!`
+}
+type ParamFunctionDeclaration struct {
+	Param string  `@Ident`
+	Coma  *string `","?`
 }

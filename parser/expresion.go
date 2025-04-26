@@ -55,7 +55,7 @@ type Variable struct {
 
 type Value struct {
 	Int                         *int                         `@Int`
-	Float                       *float32                     `@Float`
+	Float                       *float32                     `|@Float`
 	FunctionCall                *FunctionCall                `| @@`
 	String                      *string                      `| @String`
 	Bool                        *bool                        `| @("true" | "false") `

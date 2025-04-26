@@ -1,6 +1,8 @@
 package evaluator
 
-import "Lugo/parser"
+import (
+	"Lugo/parser"
+)
 
 type Program struct {
 	*Environment
@@ -28,25 +30,30 @@ func (p *Program) Run() error {
 			}
 		case st.StatementFunction != nil:
 			v := st.StatementFunction
+			args := make([]string, len(v.Args))
+			for i := range v.Args {
+				args[i] = v.Args[i].Param
+			}
 			f := Function{
 				v.Body,
-				v.Args,
+				args,
 				p.Environment,
 			}
 			if e := p.Environment.AddFunction(v.Name, f); e != nil {
 				return e
 			}
-		case st.ReturnExpression != nil:
-			v := st.StatementVariable
-			value, e := p.EvalExp(v.Expression)
-			if e != nil {
-				return e
-			}
-			p.Environment.AddVariable("return", value)
-			return nil
 		}
-
 	}
+	if p.ReturnExpression != nil {
+		v := p.ReturnExpression.ValueReturned
+		value, e := p.EvalExp(*v)
+		if e != nil {
+			return e
+		}
+		p.Environment.AddVariable("return", value)
+		return nil
+	}
+
 	return nil
 }
 
@@ -54,5 +61,6 @@ func (p *Program) EvalExp(exp parser.Expression) (Value, error) {
 	if m := exp.MathExpression; m != nil {
 		return p.EvalMath(m)
 	}
+
 	return nil, nil
 }

@@ -38,7 +38,7 @@ func (p *Program) EvalLExpression(value Value, exps []*parser.LExpression) (Valu
 		if e != nil {
 			return nil, e
 		}
-		result, e = value.EvalOp(exp.Operator, right)
+		result, e = result.EvalOp(exp.Operator, right)
 		if e != nil {
 			return nil, e
 		}

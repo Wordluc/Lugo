@@ -9,6 +9,7 @@ type Environment struct {
 func NewEnvironment() *Environment {
 	return &Environment{
 		Variables: make(map[string]Value),
+		Function:  make(map[string]Function),
 	}
 }
 func (e *Environment) AddVariable(name string, v Value) error {

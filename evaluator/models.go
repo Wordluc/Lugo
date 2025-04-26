@@ -141,7 +141,7 @@ func (f *Function) Call(params ...Value) (Value, error) {
 	}
 	for i := range f.Params {
 		if i >= len(params) {
-			fun.AddVariable(f.Params[i], nil)
+			fun.AddVariable(f.Params[i], nil) //to see
 		}
 		fun.AddVariable(f.Params[i], params[i])
 	}

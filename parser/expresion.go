@@ -34,7 +34,7 @@ type MathExpression struct {
 
 type TermExpression struct {
 	LeftTerm  *BaseValueExp   `@@`
-	Operator  *string         `(@("/"|"*")` // Multiplication or division
+	Operator  *string         `(@("/" | "*" | ">" "=" | ">" | "<" "=" | "<"| "=" "=" | "!" "=")` // Multiplication or division
 	RightTerm *TermExpression `@@)?`
 }
 

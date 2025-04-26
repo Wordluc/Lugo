@@ -277,8 +277,8 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 	tr, err := parser.ParseString("prova",
 		`
 	function prova(a,b)
-	local a=3+4
-	local b=3+4
+	local a=3>=4+4==4 + 4<4
+	local b=34*4+4>3
 	prova()
 	prova()
 	end
@@ -289,8 +289,8 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 	res := tr.toString()
 	ex :=
 		`function prova(a,b,){
-		local a=(3) + (4)
-		local b=(3) + (4)
+		local a=(3 >= (4)) + (4 == (4)) + (4 < (4))
+		local b=(34 * (4)) + (4 > (3))
 		(prova())
 		(prova())
 	}`

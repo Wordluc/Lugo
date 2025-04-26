@@ -5,7 +5,7 @@ import "Lugo/parser"
 func (p *Program) EvalMath(exp *parser.MathExpression) (Value, error) {
 	highestTerm, e := p.EvalTempMath(exp.HExp)
 	if e != nil {
-		return nil, nil
+		return nil, e
 	}
 	if len(exp.LExp) != 0 {
 		return p.EvalLExpression(highestTerm, exp.LExp)

@@ -140,3 +140,45 @@ func TestDeclareFunc(t *testing.T) {
 		t.Fatalf("Should have 7 in 'a', instead it has '%v'", value.(*Int).value)
 	}
 }
+func TestLogicalOperation(t *testing.T) {
+	code := `
+	local a = 10>4
+	b=4==4
+	c=6<3
+	d=4<=4
+	e=0>=4
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e != nil {
+		t.Fatal(e)
+	}
+	var result = map[string]bool{
+		"a": true,
+		"b": true,
+		"c": false,
+		"d": true,
+		"e": false,
+	}
+	for key, v := range result {
+		println(key)
+		value, _ := eval.GetVariable(key)
+		if value == nil {
+			t.Fatalf("%v not found", key)
+		}
+		if value.(*Bool).value != v {
+			t.Fatalf("%v should be %v, instead is %v", key, v, value.(*Bool).value)
+		}
+	}
+}

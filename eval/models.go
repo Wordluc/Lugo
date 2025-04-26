@@ -33,13 +33,21 @@ func (i *Int) CastFloat() *Float {
 	}
 }
 
+func (i *Int) CastString() *String {
+	return &String{
+		fmt.Sprint(i.value),
+	}
+}
+
 func (i *Int) EvalOp(op string, v Value) (Value, error) {
 	switch v := v.(type) {
 	case *Int:
 		return EvalInts(i, op, v)
 	case *Float:
 		return EvalFloats(i.CastFloat(), op, v)
-	case *String, *Bool:
+	case *String:
+		return EvalStrings(i.CastString(), op, v)
+	case *Bool:
 		return nil, fmt.Errorf("The operation %v isnt possible with type %v and %v", op, i.Type(), v.Type())
 	}
 	return nil, fmt.Errorf("The operation %v isnt defined for type %v and %v", op, i.Type(), v.Type())
@@ -53,13 +61,21 @@ func (i *Float) Type() TypeValue {
 	return FloatType
 }
 
+func (i *Float) CastString() *String {
+	return &String{
+		fmt.Sprint(i.value),
+	}
+}
+
 func (i *Float) EvalOp(op string, v Value) (Value, error) {
 	switch v := v.(type) {
 	case *Float:
 		return EvalFloats(i, op, v)
 	case *Int:
 		return EvalFloats(i, op, v.CastFloat())
-	case *String, *Bool:
+	case *String:
+		return EvalStrings(i.CastString(), op, v)
+	case *Bool:
 		return nil, fmt.Errorf("The operation %v isnt possible with type %v and %v", op, i.Type(), v.Type())
 	}
 	return nil, fmt.Errorf("The operation %v isnt defined for type %v and %v", op, i.Type(), v.Type())
@@ -75,16 +91,14 @@ func (i *String) Type() TypeValue {
 
 func (i *String) EvalOp(op string, v Value) (Value, error) {
 	switch v := v.(type) {
-	case *Float, *Int, *Bool:
-		return nil, fmt.Errorf("The operation %v isnt possible with type %v and %v", op, i.Type(), v.Type())
+	case *Int:
+		return EvalStrings(i, op, v.CastString())
+	case *Float:
+		return EvalStrings(i, op, v.CastString())
 	case *String:
-		if op == ".." {
-			return &String{
-				i.value + v.value,
-			}, nil
-		}
+		return EvalStrings(i, op, v)
 	}
-	return nil, fmt.Errorf("The operation %v isnt defined for type %v and %v", op, i.Type(), v.Type())
+	return nil, fmt.Errorf("The operation %v isnt possible with type %v and %v", op, i.Type(), v.Type())
 }
 
 type Bool struct {
@@ -96,41 +110,81 @@ func (i *Bool) Type() TypeValue {
 }
 
 func (i *Bool) EvalOp(op string, v Value) (Value, error) {
+	if v.Type() != i.Type() {
+		return nil, fmt.Errorf("The operation %v isnt possible with type %v and %v", op, i.Type(), v.Type())
+	}
+
+	if op == "==" {
+		return &Bool{i.value == v.(*Bool).value}, nil
+	}
+	if op == "!=" {
+		return &Bool{i.value != v.(*Bool).value}, nil
+	}
+
 	return nil, fmt.Errorf("The operation %v isnt defined for type %v and %v", op, i.Type(), v.Type())
 }
 
-func EvalFloats(a *Float, op string, b *Float) (*Float, error) {
-	var value float32
+func EvalFloats(a *Float, op string, b *Float) (Value, error) {
 	switch {
 	case op == "+":
-		value = a.value + b.value
+		return &Float{a.value + b.value}, nil
 	case op == "-":
-		value = a.value - b.value
+		return &Float{a.value - b.value}, nil
 	case op == "*":
-		value = a.value * b.value
+		return &Float{a.value * b.value}, nil
 	case op == "/":
-		value = a.value / b.value
-	default:
-		return nil, fmt.Errorf("The operation %v isnt defined for type %v and %v", op, a.Type(), b.Type())
+		return &Float{a.value / b.value}, nil
 	}
-	return &Float{value}, nil
+	switch {
+	case op == ">=":
+		return &Bool{a.value >= b.value}, nil
+	case op == "<=":
+		return &Bool{a.value <= b.value}, nil
+	case op == ">":
+		return &Bool{a.value > b.value}, nil
+	case op == "<":
+		return &Bool{a.value < b.value}, nil
+	case op == "==":
+		return &Bool{a.value == b.value}, nil
+	case op == "!=":
+		return &Bool{a.value != b.value}, nil
+	}
+	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
 }
 
-func EvalInts(a *Int, op string, b *Int) (*Int, error) {
-	var value int
+func EvalInts(a *Int, op string, b *Int) (Value, error) {
 	switch {
 	case op == "+":
-		value = a.value + b.value
+		return &Int{a.value + b.value}, nil
 	case op == "-":
-		value = a.value - b.value
+		return &Int{a.value - b.value}, nil
 	case op == "*":
-		value = a.value * b.value
+		return &Int{a.value * b.value}, nil
 	case op == "/":
-		value = a.value / b.value
-	default:
-		return nil, fmt.Errorf("The operation %v isnt defined for type %v and %v", op, a.Type(), b.Type())
+		return &Float{float32(a.value) / float32(b.value)}, nil
 	}
-	return &Int{value}, nil
+	switch {
+	case op == ">=":
+		return &Bool{a.value >= b.value}, nil
+	case op == "<=":
+		return &Bool{a.value <= b.value}, nil
+	case op == ">":
+		return &Bool{a.value > b.value}, nil
+	case op == "<":
+		return &Bool{a.value < b.value}, nil
+	case op == "==":
+		return &Bool{a.value == b.value}, nil
+	case op == "!=":
+		return &Bool{a.value != b.value}, nil
+	}
+	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
+}
+
+func EvalStrings(a *String, op string, b *String) (Value, error) {
+	if op == ".." {
+		return &String{a.value + b.value}, nil
+	}
+	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
 }
 
 type Function struct {

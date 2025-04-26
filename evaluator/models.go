@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"Lugo/parser"
 	"fmt"
 )
 
@@ -128,11 +129,29 @@ func EvalInts(a *Int, op string, b *Int) (*Int, error) {
 }
 
 type Function struct {
-	Environment
-	Body Program
+	Body    parser.Lua
+	Params  []string
+	BaseEnv *Environment
 }
 
 func (f *Function) Call(params ...Value) (Value, error) {
-	panic("need to assign paraments")
-	return nil, f.Body.Run()
+	fun := NewEval(f.Body)
+	if e := fun.SetHigherEnvironment(f.BaseEnv); e != nil {
+		return nil, e
+	}
+	for i := range f.Params {
+		if i >= len(params) {
+			fun.AddVariable(f.Params[i], nil)
+		}
+		fun.AddVariable(f.Params[i], params[i])
+	}
+	err := fun.Run()
+	if err != nil {
+		return nil, err
+	}
+	value, err := fun.Environment.GetVariable("return")
+	if err != nil {
+		return nil, err
+	}
+	return value, err
 }

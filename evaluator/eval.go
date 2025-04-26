@@ -2,32 +2,8 @@ package evaluator
 
 import "Lugo/parser"
 
-type Environment struct {
-	Variables map[string]Value
-	Function  map[string]Function
-}
-
-func NewEnvironment() Environment {
-	return Environment{
-		Variables: make(map[string]Value),
-	}
-}
-func (e *Environment) AddVariable(name string, v Value) error {
-	e.Variables[name] = v
-	return nil
-}
-
-func (e *Environment) AddFunction(name string, v Function) error {
-	e.Function[name] = v
-	return nil
-}
-
-func (e *Environment) GetVariable(name string) (Value, error) {
-	return e.Variables[name], nil
-}
-
 type Program struct {
-	Environment
+	*Environment
 	parser.Lua
 }
 
@@ -37,6 +13,7 @@ func NewEval(tree parser.Lua) *Program {
 		tree,
 	}
 }
+
 func (p *Program) Run() error {
 	for _, st := range p.Lua.Statements {
 		switch {
@@ -51,15 +28,24 @@ func (p *Program) Run() error {
 			}
 		case st.StatementFunction != nil:
 			v := st.StatementFunction
-			body := NewEval(v.Body)
 			f := Function{
-				NewEnvironment(),
-				*body,
+				v.Body,
+				v.Args,
+				p.Environment,
 			}
 			if e := p.Environment.AddFunction(v.Name, f); e != nil {
 				return e
 			}
+		case st.ReturnExpression != nil:
+			v := st.StatementVariable
+			value, e := p.EvalExp(v.Expression)
+			if e != nil {
+				return e
+			}
+			p.Environment.AddVariable("return", value)
+			return nil
 		}
+
 	}
 	return nil
 }

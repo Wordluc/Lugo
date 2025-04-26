@@ -181,8 +181,26 @@ func EvalInts(a *Int, op string, b *Int) (Value, error) {
 }
 
 func EvalStrings(a *String, op string, b *String) (Value, error) {
+	//remove " from the begin and the end
+	a.value = a.value[1 : len(a.value)-1]
+	b.value = b.value[1 : len(b.value)-1]
+
 	if op == ".." {
 		return &String{a.value + b.value}, nil
+	}
+	switch {
+	case op == ">=":
+		return &Bool{a.value >= b.value}, nil
+	case op == "<=":
+		return &Bool{a.value <= b.value}, nil
+	case op == ">":
+		return &Bool{a.value > b.value}, nil
+	case op == "<":
+		return &Bool{a.value < b.value}, nil
+	case op == "==":
+		return &Bool{a.value == b.value}, nil
+	case op == "!=":
+		return &Bool{a.value != b.value}, nil
 	}
 	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
 }

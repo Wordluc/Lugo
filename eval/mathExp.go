@@ -1,6 +1,8 @@
 package eval
 
-import "Lugo/parser"
+import (
+	"Lugo/parser"
+)
 
 func (p *Program) EvalMath(exp *parser.MathExpression) (Value, error) {
 	highestTerm, e := p.EvalTempMath(exp.HExp)
@@ -29,6 +31,9 @@ func (p *Program) EvalTempMath(exp *parser.TermExpression) (Value, error) {
 	}
 	op = *exp.Operator
 	right, e = p.EvalTempMath(exp.RightTerm)
+	if e != nil {
+		return nil, e
+	}
 	return left.EvalOp(op, right)
 }
 
@@ -62,8 +67,13 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //TableRetrieveW
 			value: *exp.String,
 		}, nil
 	case exp.Bool != nil:
+		if *exp.Bool == "true" {
+			return &Bool{
+				value: true,
+			}, nil
+		}
 		return &Bool{
-			value: *exp.Bool,
+			value: false,
 		}, nil
 	case exp.Identifier != nil:
 		return p.Environment.GetVariable(*exp.Identifier)

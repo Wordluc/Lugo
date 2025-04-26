@@ -279,6 +279,7 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 	function prova(a,b)
 	local a=3>=4+4==4 + 4<4
 	local b=34*4+4>3
+	local f=3>=4==false
 	prova()
 	prova()
 	end
@@ -291,6 +292,7 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 		`function prova(a,b,){
 		local a=(3 >= (4)) + (4 == (4)) + (4 < (4))
 		local b=(34 * (4)) + (4 > (3))
+		local f=(3 >= (4 == (false)))
 		(prova())
 		(prova())
 	}`

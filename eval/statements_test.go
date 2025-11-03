@@ -222,3 +222,32 @@ func TestStringOperation(t *testing.T) {
 		t.Fatalf("%v should be %v, instead is %v", "c", "true", value.(*Bool).value)
 	}
 }
+func TestLambdafunction(t *testing.T) {
+	code := `
+	local f = function () 
+		return 8
+	end
+	a=f()
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, _ := eval.GetVariable("a")
+	if value.(*Int).value != 8 {
+		t.Fatalf("%v should be %v, instead is %v", "a", 8, value.(*String).value)
+	}
+
+}

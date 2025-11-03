@@ -3,7 +3,6 @@ package eval
 type Environment struct {
 	variables map[string]Value
 	global    map[string]Value
-	function  map[string]Function
 	higherEnv *Environment
 }
 
@@ -11,7 +10,6 @@ func NewEnvironment() *Environment {
 	return &Environment{
 		variables: make(map[string]Value),
 		global:    make(map[string]Value),
-		function:  make(map[string]Function),
 	}
 }
 func (e *Environment) AddVariable(name string, v Value) error {
@@ -24,7 +22,7 @@ func (e *Environment) AddGlobalVariable(name string, v Value) error {
 }
 
 func (e *Environment) AddFunction(name string, v Function) error {
-	e.function[name] = v
+	e.global[name] = &v
 	return nil
 }
 
@@ -43,8 +41,8 @@ func (e *Environment) GetVariable(name string) (Value, error) {
 	return nil, nil
 }
 
-func (e *Environment) SetHigherEnvironment(env *Environment) error {
-	e.higherEnv = env
-	env.global = env.global
+func (e *Environment) SetHigherEnvironment(base *Environment) error {
+	e.higherEnv = base
+	e.global = base.global
 	return nil
 }

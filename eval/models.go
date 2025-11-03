@@ -2,16 +2,18 @@ package eval
 
 import (
 	"Lugo/parser"
+	"errors"
 	"fmt"
 )
 
 type TypeValue string
 
 const (
-	IntType    TypeValue = "int"
-	FloatType  TypeValue = "float"
-	StringType TypeValue = "string"
-	BoolType   TypeValue = "bool"
+	IntType      TypeValue = "int"
+	FloatType    TypeValue = "float"
+	StringType   TypeValue = "string"
+	BoolType     TypeValue = "bool"
+	FunctionType TypeValue = "function"
 )
 
 type Value interface {
@@ -210,6 +212,14 @@ type Function struct {
 	Body    parser.Lua
 	Params  []string
 	BaseEnv *Environment
+}
+
+func (f *Function) Type() TypeValue {
+	return FunctionType
+}
+
+func (f *Function) EvalOp(op string, v Value) (Value, error) {
+	return nil, errors.New("Function does't support this operation:" + op)
 }
 
 func (f *Function) Call(params ...Value) (Value, error) {

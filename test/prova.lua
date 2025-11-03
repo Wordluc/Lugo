@@ -13,3 +13,9 @@ cioa = {
 
 	end
 }
+local f = function()
+
+end
+local c = function()
+
+end

@@ -35,15 +35,7 @@ func (p *Program) Run() error {
 			}
 		case st.StatementFunction != nil:
 			v := st.StatementFunction
-			args := make([]string, len(v.Args))
-			for i := range v.Args {
-				args[i] = v.Args[i].Param
-			}
-			f := Function{
-				v.Body,
-				args,
-				p.Environment,
-			}
+			f := p.getFunction(v)
 			if e := p.Environment.AddFunction(v.Name, f); e != nil {
 				return e
 			}
@@ -61,11 +53,39 @@ func (p *Program) Run() error {
 
 	return nil
 }
+func (p *Program) getFunction(exp *parser.StatementFunction) Function {
+	args := make([]string, len(exp.Args))
+	for i := range exp.Args {
+		args[i] = exp.Args[i].Param
+	}
+	return Function{
+		exp.Body,
+		args,
+		p.Environment,
+	}
+}
+func (p *Program) getLambdaFunction(exp *parser.ExpressionFunction) *Function {
+	args := make([]string, len(exp.Args))
+	for i := range exp.Args {
+		args[i] = exp.Args[i].Param
+	}
+	return &Function{
+		exp.Body,
+		args,
+		p.Environment,
+	}
+}
 
 func (p *Program) EvalExp(exp parser.Expression) (Value, error) {
 	if m := exp.MathExpression; m != nil {
 		return p.EvalMath(m)
 	}
+	if m := exp.LambdaFunctionExpression; m != nil {
+		return p.getLambdaFunction(m), nil
+
+	}
+
+	//TODO: implement dictory and lambda functions
 
 	return nil, nil
 }

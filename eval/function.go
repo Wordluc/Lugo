@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Program) EvalFunctionCall(call *parser.FunctionCall) (Value, error) {
-	f, ok := p.function[call.Name]
+	f, ok := p.global[call.Name]
 	if !ok {
 		return nil, fmt.Errorf("Function %v not registered", call.Name)
 	}
@@ -18,5 +18,5 @@ func (p *Program) EvalFunctionCall(call *parser.FunctionCall) (Value, error) {
 			return nil, e
 		}
 	}
-	return f.Call(params...)
+	return f.(*Function).Call(params...)
 }

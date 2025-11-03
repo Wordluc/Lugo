@@ -165,6 +165,7 @@ func EvalInts(a *Int, op string, b *Int) (Value, error) {
 	}
 	switch {
 	case op == ">=":
+		println(a.value)
 		return &Bool{a.value >= b.value}, nil
 	case op == "<=":
 		return &Bool{a.value <= b.value}, nil

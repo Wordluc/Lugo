@@ -275,8 +275,7 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 		print(err.Error())
 	}
 	tr, err := parser.ParseString("prova",
-		`
-	function prova(a,b)
+		`function prova(a,b)
 	local a=3>=4+4==4 + 4<4
 	local b=34*4+4>3
 	local f=3>=4==false
@@ -290,16 +289,16 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 	res := tr.toString()
 	ex :=
 		`function prova(a,b,){
-		local a=(3 >= (4)) + (4 == (4)) + (4 < (4))
-		local b=(34 * (4)) + (4 > (3))
-		local f=(3 >= (4 == (false)))
-		(prova())
-		(prova())
+	local a=(3 >= (4)) + (4) == (4) + (4 < (4))
+	local b=(34 * (4)) + (4 > (3))
+	local f=(3 >= (4)) == (false)
+	(prova())
+	(prova())
 	}`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
-	ex += "\n"
 
+	ex += "\n"
 	if res != ex {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
 	}

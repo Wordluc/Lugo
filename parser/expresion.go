@@ -58,7 +58,7 @@ type Value struct {
 	Float                       *float32                     `|@Float`
 	FunctionCall                *FunctionCall                `|@@`
 	String                      *string                      `|@String`
-	Bool                        *bool                        `|@("true" | "false") `
+	Bool                        *string                      `|@("true" | "false") `
 	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
 	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`
 	Identifier                  *string                      `|@Ident`

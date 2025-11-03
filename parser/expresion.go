@@ -39,7 +39,7 @@ type TermExpression struct {
 }
 
 type LExpression struct {
-	Operator string          `@("+" | "-" | "or" | "and" | "." "." | "=" "=" | "!" "=" )`
+	Operator string          `@("+" | "-" | "or" | "and" | "." "." | "=" "=" | "~" "=" )`
 	HExp     *TermExpression `@@`
 }
 

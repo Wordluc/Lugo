@@ -117,7 +117,7 @@ func (i *Bool) EvalOp(op string, v Value) (Value, error) {
 	if op == "==" {
 		return &Bool{i.value == v.(*Bool).value}, nil
 	}
-	if op == "!=" {
+	if op == "~=" {
 		return &Bool{i.value != v.(*Bool).value}, nil
 	}
 
@@ -125,57 +125,57 @@ func (i *Bool) EvalOp(op string, v Value) (Value, error) {
 }
 
 func EvalFloats(a *Float, op string, b *Float) (Value, error) {
-	switch {
-	case op == "+":
+	switch op {
+	case "+":
 		return &Float{a.value + b.value}, nil
-	case op == "-":
+	case "-":
 		return &Float{a.value - b.value}, nil
-	case op == "*":
+	case "*":
 		return &Float{a.value * b.value}, nil
-	case op == "/":
+	case "/":
 		return &Float{a.value / b.value}, nil
 	}
-	switch {
-	case op == ">=":
+	switch op {
+	case ">=":
 		return &Bool{a.value >= b.value}, nil
-	case op == "<=":
+	case "<=":
 		return &Bool{a.value <= b.value}, nil
-	case op == ">":
+	case ">":
 		return &Bool{a.value > b.value}, nil
-	case op == "<":
+	case "<":
 		return &Bool{a.value < b.value}, nil
-	case op == "==":
+	case "==":
 		return &Bool{a.value == b.value}, nil
-	case op == "!=":
+	case "~=":
 		return &Bool{a.value != b.value}, nil
 	}
 	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
 }
 
 func EvalInts(a *Int, op string, b *Int) (Value, error) {
-	switch {
-	case op == "+":
+	switch op {
+	case "+":
 		return &Int{a.value + b.value}, nil
-	case op == "-":
+	case "-":
 		return &Int{a.value - b.value}, nil
-	case op == "*":
+	case "*":
 		return &Int{a.value * b.value}, nil
-	case op == "/":
+	case "/":
 		return &Float{float32(a.value) / float32(b.value)}, nil
 	}
-	switch {
-	case op == ">=":
+	switch op {
+	case ">=":
 		println(a.value)
 		return &Bool{a.value >= b.value}, nil
-	case op == "<=":
+	case "<=":
 		return &Bool{a.value <= b.value}, nil
-	case op == ">":
+	case ">":
 		return &Bool{a.value > b.value}, nil
-	case op == "<":
+	case "<":
 		return &Bool{a.value < b.value}, nil
-	case op == "==":
+	case "==":
 		return &Bool{a.value == b.value}, nil
-	case op == "!=":
+	case "~=":
 		return &Bool{a.value != b.value}, nil
 	}
 	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
@@ -189,18 +189,18 @@ func EvalStrings(a *String, op string, b *String) (Value, error) {
 	if op == ".." {
 		return &String{a.value + b.value}, nil
 	}
-	switch {
-	case op == ">=":
+	switch op {
+	case ">=":
 		return &Bool{a.value >= b.value}, nil
-	case op == "<=":
+	case "<=":
 		return &Bool{a.value <= b.value}, nil
-	case op == ">":
+	case ">":
 		return &Bool{a.value > b.value}, nil
-	case op == "<":
+	case "<":
 		return &Bool{a.value < b.value}, nil
-	case op == "==":
+	case "==":
 		return &Bool{a.value == b.value}, nil
-	case op == "!=":
+	case "~=":
 		return &Bool{a.value != b.value}, nil
 	}
 	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())

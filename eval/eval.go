@@ -25,7 +25,12 @@ func (p *Program) Run() error {
 			if e != nil {
 				return e
 			}
-			if e := p.Environment.AddVariable(v.Variable.Name, value); e != nil {
+			if v.Variable.Visibility != nil && *v.Variable.Visibility == "local" {
+				if e := p.Environment.AddVariable(v.Variable.Name, value); e != nil {
+					return e
+				}
+			}
+			if e := p.Environment.AddGlobalVariable(v.Variable.Name, value); e != nil {
 				return e
 			}
 		case st.StatementFunction != nil:

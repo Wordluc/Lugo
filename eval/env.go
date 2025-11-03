@@ -1,35 +1,43 @@
 package eval
 
 type Environment struct {
-	Variables map[string]Value
-	Function  map[string]Function
+	variables map[string]Value
+	global    map[string]Value
+	function  map[string]Function
 	higherEnv *Environment
 }
 
 func NewEnvironment() *Environment {
 	return &Environment{
-		Variables: make(map[string]Value),
-		Function:  make(map[string]Function),
+		variables: make(map[string]Value),
+		global:    make(map[string]Value),
+		function:  make(map[string]Function),
 	}
 }
 func (e *Environment) AddVariable(name string, v Value) error {
-	e.Variables[name] = v
+	e.variables[name] = v
+	return nil
+}
+func (e *Environment) AddGlobalVariable(name string, v Value) error {
+	e.global[name] = v
 	return nil
 }
 
 func (e *Environment) AddFunction(name string, v Function) error {
-	e.Function[name] = v
+	e.function[name] = v
 	return nil
 }
 
 func (e *Environment) GetVariable(name string) (Value, error) {
-	if v := e.Variables[name]; v != nil {
+	if v := e.variables[name]; v != nil {
 		return v, nil
 	}
-	if e.higherEnv == nil {
-		return nil, nil
+	if e.higherEnv != nil {
+		if v := e.higherEnv.variables[name]; v != nil {
+			return v, nil
+		}
 	}
-	if v := e.higherEnv.Variables[name]; v != nil {
+	if v := e.global[name]; v != nil {
 		return v, nil
 	}
 	return nil, nil
@@ -37,5 +45,6 @@ func (e *Environment) GetVariable(name string) (Value, error) {
 
 func (e *Environment) SetHigherEnvironment(env *Environment) error {
 	e.higherEnv = env
+	env.global = env.global
 	return nil
 }

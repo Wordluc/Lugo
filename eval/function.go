@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Program) EvalFunctionCall(call *parser.FunctionCall) (Value, error) {
-	f, ok := p.Function[call.Name]
+	f, ok := p.function[call.Name]
 	if !ok {
 		return nil, fmt.Errorf("Function %v not registered", call.Name)
 	}

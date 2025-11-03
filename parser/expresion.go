@@ -56,9 +56,9 @@ type Variable struct {
 type Value struct {
 	Int                         *int                         `@Int`
 	Float                       *float32                     `|@Float`
-	FunctionCall                *FunctionCall                `| @@`
-	Bool                        *string                      `| @("true" | "false") `
-	String                      *string                      `| @String`
+	FunctionCall                *FunctionCall                `|@@`
+	String                      *string                      `|@String`
+	Bool                        *bool                        `|@("true" | "false") `
 	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
 	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`
 	Identifier                  *string                      `|@Ident`

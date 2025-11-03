@@ -41,6 +41,12 @@ func (p *Program) Run() error {
 			}
 		}
 	}
+	for _, exp := range p.Lua.Expression {
+		_, e := p.EvalExp(*exp)
+		if e != nil {
+			return e
+		}
+	}
 	if p.ReturnExpression != nil {
 		v := p.ReturnExpression.ValueReturned
 		value, e := p.EvalExp(*v)
@@ -82,7 +88,6 @@ func (p *Program) EvalExp(exp parser.Expression) (Value, error) {
 	}
 	if m := exp.LambdaFunctionExpression; m != nil {
 		return p.getLambdaFunction(m), nil
-
 	}
 
 	//TODO: implement dictory and lambda functions

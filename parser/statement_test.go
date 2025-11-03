@@ -22,6 +22,21 @@ func TestSimpleMathOperationWithLocal(t *testing.T) {
 		t.Fatalf("error %v expected: %v, got: %v", "simpleMathOperationWithLocal", ex, res)
 	}
 }
+func TestSimpleMathOperationWithoutSave(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova", "3*(4+2)/4+1")
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex := "(3 * (((4) + (2)) / (4))) + (1)"
+	if res != ex {
+		t.Fatalf("error %v expected: %v, got: %v", "TestSimpleMathOperationWithoutSave", ex, res)
+	}
+}
 func TestSimpleMathOperationWithoutLocal(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
@@ -257,8 +272,7 @@ func TestTableWithLabdaFunction(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`local persona={nome=("luca"),eta=(12),getFood=function (){
-		return ("kebab")
+		`local persona={nome=("luca"),eta=(12),getFood=function (){return ("kebab")
 		},}
 		return (persona)`
 	res = strings.ReplaceAll(res, "\u0009", "")

@@ -31,8 +31,10 @@ func (e *Lua) toString() string {
 		if i != len(e.Statements)-1 {
 			res += "\n"
 		}
+		if len(e.Statements)-1 == i {
+			res += "\n"
+		}
 	}
-	res += "\n"
 	for i, ex := range e.Expression {
 		res += ex.toString()
 		if i != len(e.Expression)-1 {

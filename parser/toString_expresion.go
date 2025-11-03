@@ -83,7 +83,6 @@ func (t *TermExpression) toString() string {
 		res += t.LeftTerm.toString()
 	}
 	if t.Operator != nil {
-		fmt.Printf("jfklsdf %+v \n", *t.Operator)
 		res += " " + *t.Operator
 	}
 	if t.RightTerm != nil {

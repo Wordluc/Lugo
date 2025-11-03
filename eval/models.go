@@ -9,11 +9,12 @@ import (
 type TypeValue string
 
 const (
-	IntType      TypeValue = "int"
-	FloatType    TypeValue = "float"
-	StringType   TypeValue = "string"
-	BoolType     TypeValue = "bool"
-	FunctionType TypeValue = "function"
+	IntType        TypeValue = "int"
+	FloatType      TypeValue = "float"
+	StringType     TypeValue = "string"
+	BoolType       TypeValue = "bool"
+	FunctionType   TypeValue = "function"
+	DictionaryType TypeValue = "Dictionary"
 )
 
 type Value interface {
@@ -242,4 +243,16 @@ func (f *Function) Call(params ...Value) (Value, error) {
 		return nil, err
 	}
 	return value, err
+}
+
+type Dictionary struct {
+	Elements []Value
+}
+
+func (i *Dictionary) Type() TypeValue {
+	return DictionaryType
+}
+
+func (i *Dictionary) EvalOp(op string, v Value) (Value, error) {
+	return nil, errors.New("Dictionary does't support this operation:" + op)
 }

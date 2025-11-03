@@ -228,6 +228,7 @@ func TestLambdafunction(t *testing.T) {
 		return 8
 	end
 	a=f()
+	a+4
 	`
 	parser, err := participle.Build[parser.Lua]()
 	if err != nil {

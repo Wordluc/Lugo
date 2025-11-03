@@ -148,6 +148,7 @@ func TestLogicalOperation(t *testing.T) {
 	d=4<=4
 	e=0>=4
 	f=3>=4==false
+	g=3>=4~=false
 	`
 	parser, err := participle.Build[parser.Lua]()
 	if err != nil {
@@ -172,6 +173,7 @@ func TestLogicalOperation(t *testing.T) {
 		"d": true,
 		"e": false,
 		"f": true,
+		"g": false,
 	}
 	for key, v := range result {
 		value, _ := eval.GetVariable(key)

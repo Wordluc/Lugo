@@ -246,9 +246,28 @@ func (f *Function) Call(params ...Value) (Value, error) {
 }
 
 type Dictionary struct {
-	Elements []Value
+	//TODO; refactor
+	Elements map[Value]Value
 }
 
+// TODO; refactor
+func (i *Dictionary) Get(key Value) (res Value, e error) {
+	for i, v := range i.Elements {
+		if i.Type() != key.Type() {
+			continue
+		}
+		if res, e = i.EvalOp("==", key); e == nil {
+			if res.(*Bool).value {
+				return v, nil
+			}
+
+		}
+		if e != nil {
+			return nil, e
+		}
+	}
+	return res, nil
+}
 func (i *Dictionary) Type() TypeValue {
 	return DictionaryType
 }

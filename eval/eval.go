@@ -89,8 +89,9 @@ func (p *Program) EvalExp(exp parser.Expression) (Value, error) {
 	if m := exp.LambdaFunctionExpression; m != nil {
 		return p.getLambdaFunction(m), nil
 	}
-
-	//TODO: implement dictory and lambda functions
+	if m := exp.TableExpression; m != nil {
+		return p.EvalTable(m)
+	}
 
 	return nil, nil
 }

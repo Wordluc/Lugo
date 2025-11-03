@@ -22,7 +22,7 @@ type TableDeclaration struct {
 }
 
 type TableEntry struct {
-	Name  *string     `(@Ident "=")?`
+	Name  *Value      `(@@ "=")?`
 	Value *Expression `@@`
 	Come  string      `","?`
 }

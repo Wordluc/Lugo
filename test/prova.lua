@@ -13,9 +13,7 @@ cioa = {
 
 	end
 }
-local f = function()
-
-end
-local c = function()
-
-end
+local f = {
+	a = function() return 45 end,
+	"ciao",
+}

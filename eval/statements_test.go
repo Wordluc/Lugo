@@ -227,7 +227,7 @@ func TestLambdafunction(t *testing.T) {
 	local f = function () 
 		return 8
 	end
-	a=f()
+	a=f()+1
 	a+4
 	`
 	parser, err := participle.Build[parser.Lua]()
@@ -247,8 +247,50 @@ func TestLambdafunction(t *testing.T) {
 		t.Fatal(e)
 	}
 	value, _ := eval.GetVariable("a")
-	if value.(*Int).value != 8 {
-		t.Fatalf("%v should be %v, instead is %v", "a", 8, value.(*String).value)
+	if value.(*Int).value != 9 {
+		t.Fatalf("%v should be %v, instead is %v", "a", 9, value.(*Int).value)
+	}
+
+}
+func TestDictionary(t *testing.T) {
+	code := `
+	local f = {
+		"a"=function ()return 45 end,
+		"ciao",
+	}
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("f")
+	if e != nil {
+		t.Fatal(e)
+	}
+	dic := value.(*Dictionary)
+	if r, e := dic.Get(&Int{value: 1}); r.Type() != StringType || e != nil {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be type %v, instead is %v", "1", "string", value.Type())
+	}
+	if r, e := dic.Get(&String{value: "\"a\""}); r.Type() != FunctionType || e != nil {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be type %v, instead is %v", "a", "function", value.Type())
 	}
 
 }

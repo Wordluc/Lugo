@@ -114,7 +114,7 @@ func (e *TableDeclaration) toString() string {
 func (e *TableEntry) toString() string {
 	res := ""
 	if e.Name != nil {
-		res += *e.Name
+		res += e.Name.toString()
 		res += "="
 	}
 	res += e.Value.toString()

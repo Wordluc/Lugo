@@ -257,6 +257,7 @@ func TestDictionary(t *testing.T) {
 	local f = {
 		"a"=function ()return 45 end,
 		"ciao",
+		"d"=4,
 	}
 	`
 	parser, err := participle.Build[parser.Lua]()
@@ -286,11 +287,17 @@ func TestDictionary(t *testing.T) {
 		}
 		t.Fatalf("%v should be type %v, instead is %v", "1", "string", value.Type())
 	}
-	if r, e := dic.Get(&String{value: "\"a\""}); r.Type() != FunctionType || e != nil {
+	if r, e := dic.Get(&String{value: "a"}); r.Type() != FunctionType || e != nil {
 		if e != nil {
 			t.Error(e)
 		}
 		t.Fatalf("%v should be type %v, instead is %v", "a", "function", value.Type())
+	}
+	if r, e := dic.Get(&String{value: "d"}); r.Type() != IntType || e != nil {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be type %v, instead is %v", "d", "int", value.Type())
 	}
 
 }

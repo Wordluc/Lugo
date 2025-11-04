@@ -57,7 +57,7 @@ type Value struct {
 	Int                         *int                         `@Int`
 	Float                       *float32                     `|@Float`
 	FunctionCall                *FunctionCall                `|@@`
-	String                      *string                      `|@String`
+	String                      *string                      `|"\"" @String "\""`
 	Bool                        *string                      `|@("true" | "false") `
 	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
 	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`

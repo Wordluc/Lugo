@@ -17,3 +17,7 @@ local f = {
 	a = function() return 45 end,
 	"ciao",
 }
+local f = {
+	a = "hello",
+	"world",
+}

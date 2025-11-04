@@ -86,7 +86,7 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //TableRetrieveW
 		}
 		dic := value.(*Dictionary)
 		pTemp := NewHigherTempEval(p, dic)
-		return pTemp.EvalExp(*exp.TableRetrieveWithoutBracket.Index)
+		return pTemp.EvalValue(exp.TableRetrieveWithoutBracket.Index)
 
 	case exp.TableRetrieveWithBracket != nil:
 		value, e := p.GetVariable(exp.TableRetrieveWithBracket.TableName)

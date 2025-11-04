@@ -206,7 +206,7 @@ func TestTableRetrieve(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`local a=(pippo.(prova))
+		`local a=(pippo.prova)
 		local a=(pippo[("cioa")])
 		local a=(pippo[(getName())])
 		local a=(pippo[(cioa)])
@@ -336,7 +336,7 @@ func TestDictionaryUse(t *testing.T) {
 	ex :=
 		`local f={a=function (){return ("hello")
 		},("world"),}
-		c=(f.(a()) .. (" ") .. (f[(1)]))`
+		c=(f.a()) .. (" ") .. (f[(1)])`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 

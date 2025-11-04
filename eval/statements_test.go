@@ -313,8 +313,9 @@ func TestDictionaryPlus(t *testing.T) {
 	local f = {
 		a=function ()return "hello" end,
 		"world",
+		b="people",
 	}
-	c=f.a() .. " " .. f[1]
+	c=f.a() .. " " .. f[1] .. " " .. f.b
 	`
 	parser, err := participle.Build[parser.Lua]()
 	if err != nil {
@@ -336,10 +337,10 @@ func TestDictionaryPlus(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if r, _ := value.(*String); r.value != "hello world" {
+	if r, _ := value.(*String); r.value != "hello world people" {
 		if e != nil {
 			t.Error(e)
 		}
-		t.Fatalf("%v should be %v, instead is %v", "c", "hello world", r.value)
+		t.Fatalf("%v should be %v, instead is %v", "c", "hello world people", r.value)
 	}
 }

@@ -169,7 +169,6 @@ func EvalInts(a *Int, op string, b *Int) (Value, error) {
 	}
 	switch op {
 	case ">=":
-		println(a.value)
 		return &Bool{a.value >= b.value}, nil
 	case "<=":
 		return &Bool{a.value <= b.value}, nil
@@ -185,30 +184,28 @@ func EvalInts(a *Int, op string, b *Int) (Value, error) {
 	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
 }
 
-func EvalStrings(a *String, op string, b *String) (Value, error) {
-	//remove " from the begin and the end
-	//	a.value = a.value[1 : len(a.value)-1]
-	//	b.value = b.value[1 : len(b.value)-1]
-	if op == ".." {
-		a, _ := strings.CutSuffix(a.value, "\"")
-		b, _ := strings.CutPrefix(b.value, "\"")
-		return &String{a + b}, nil
-	}
+func EvalStrings(_a *String, op string, _b *String) (Value, error) {
+	a, _ := strings.CutSuffix(_a.value, "\"")
+	a, _ = strings.CutPrefix(a, "\"")
+	b, _ := strings.CutSuffix(_b.value, "\"")
+	b, _ = strings.CutPrefix(b, "\"")
 	switch op {
+	case "..":
+		return &String{a + b}, nil
 	case ">=":
-		return &Bool{a.value >= b.value}, nil
+		return &Bool{a >= b}, nil
 	case "<=":
-		return &Bool{a.value <= b.value}, nil
+		return &Bool{a <= b}, nil
 	case ">":
-		return &Bool{a.value > b.value}, nil
+		return &Bool{a > b}, nil
 	case "<":
-		return &Bool{a.value < b.value}, nil
+		return &Bool{a < b}, nil
 	case "==":
-		return &Bool{a.value == b.value}, nil
+		return &Bool{a == b}, nil
 	case "~=":
-		return &Bool{a.value != b.value}, nil
+		return &Bool{a != b}, nil
 	}
-	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, a.Type(), b.Type())
+	return nil, fmt.Errorf("The operation %v isn't defined for type %v and %v", op, _a.Type(), _b.Type())
 }
 
 type Function struct {
@@ -258,17 +255,16 @@ func (i *Dictionary) Get(key Value) (res Value, e error) {
 		if i.Type() != key.Type() {
 			continue
 		}
-		if res, e = i.EvalOp("==", key); e == nil {
-			if res.(*Bool).value {
-				return v, nil
-			}
-
-		}
+		res, e = i.EvalOp("==", key)
 		if e != nil {
 			return nil, e
 		}
+		if res.(*Bool).value {
+			return v, nil
+		}
+
 	}
-	return res, nil
+	return res, errors.New("Not in dictionary not found")
 }
 func (i *Dictionary) Type() TypeValue {
 	return DictionaryType

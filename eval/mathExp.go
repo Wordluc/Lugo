@@ -79,6 +79,27 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //TableRetrieveW
 		return p.Environment.GetVariable(*exp.Identifier)
 	case exp.FunctionCall != nil:
 		return p.EvalFunctionCall(exp.FunctionCall)
+	case exp.TableRetrieveWithoutBracket != nil:
+		value, e := p.GetVariable(*exp.TableRetrieveWithoutBracket.TableName)
+		if e != nil {
+			return nil, e
+		}
+		dic := value.(*Dictionary)
+		pTemp := NewHigherTempEval(p, dic)
+		return pTemp.EvalExp(*exp.TableRetrieveWithoutBracket.Index)
+
+	case exp.TableRetrieveWithBracket != nil:
+		value, e := p.GetVariable(exp.TableRetrieveWithBracket.TableName)
+		if e != nil {
+			return nil, e
+		}
+		dic := value.(*Dictionary)
+		pTemp := NewHigherTempEval(p, dic)
+		index, e := pTemp.EvalExp(*exp.TableRetrieveWithBracket.Index)
+		if e != nil {
+			return nil, e
+		}
+		return dic.Get(index)
 	}
 	return nil, nil
 }

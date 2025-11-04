@@ -15,6 +15,25 @@ func NewEval(tree parser.Lua) *Program {
 		tree,
 	}
 }
+func NewHigherTempEval(higher *Program, dict *Dictionary) *Program {
+	env := NewEnvironment()
+	env.SetHigherEnvironment(higher.Environment)
+	for keyRaw, v := range dict.Elements {
+		if keyRaw.Type() != StringType {
+			continue
+		}
+		key := keyRaw.(*String)
+		if v.Type() == FunctionType {
+			env.global[key.value] = v
+		} else {
+			env.AddVariable(key.value, v)
+		}
+	}
+	return &Program{
+		env,
+		higher.Lua,
+	}
+}
 
 func (p *Program) Run() error {
 	for _, st := range p.Lua.Statements {

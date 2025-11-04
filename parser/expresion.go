@@ -13,8 +13,8 @@ type TableRetrieveWithBracket struct {
 }
 
 type TableRetrieveWithoutBracket struct {
-	TableName *string `@Ident "."`
-	Index     *string ` @Ident`
+	TableName *string     `@Ident "."`
+	Index     *Expression ` @@`
 }
 
 type TableDeclaration struct {

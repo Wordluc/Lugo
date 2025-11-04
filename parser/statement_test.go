@@ -206,7 +206,7 @@ func TestTableRetrieve(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`local a=(pippo.prova)
+		`local a=(pippo.(prova))
 		local a=(pippo[("cioa")])
 		local a=(pippo[(getName())])
 		local a=(pippo[(cioa)])
@@ -309,6 +309,34 @@ func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
 	(prova())
 	(prova())
 	}`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
+	}
+}
+func TestDictionaryUse(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`local f = {
+		a=function ()return "hello" end,
+		"world",
+	}
+	c=f.a().." "..f[1]
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`local f={a=function (){return ("hello")
+		},("world"),}
+		c=(f.(a()) .. (" ") .. (f[(1)]))`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 

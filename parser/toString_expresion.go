@@ -132,7 +132,7 @@ func (e *TableRetrieveWithoutBracket) toString() string {
 	res := ""
 	res += *e.TableName
 	res += "."
-	res += *e.Index
+	res += e.Index.toString()
 	return res
 }
 

@@ -208,7 +208,7 @@ func TestStringOperation(t *testing.T) {
 		t.Fatal(e)
 	}
 	value, _ := eval.GetVariable("a")
-	if value.(*String).value != "\"ciao luca\"" {
+	if value.(*String).value != "ciao luca" {
 		t.Fatalf("%v should be %v, instead is %v", "a", "ciao luca", value.(*String).value)
 	}
 
@@ -307,4 +307,39 @@ func TestDictionary(t *testing.T) {
 		t.Fatalf("%v should be type %v, instead is %v", "d", "int", value.Type())
 	}
 
+}
+func TestDictionaryPlus(t *testing.T) {
+	code := `
+	local f = {
+		a=function ()return "hello" end,
+		"world",
+	}
+	c=f.a() .. " " .. f[1]
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("c")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(*String); r.value != "hello world" {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "c", "hello world", r.value)
+	}
 }

@@ -7,22 +7,22 @@ type Expression struct {
 	MathExpression           *MathExpression      `|@@)`
 }
 
-type TableRetrieveWithBracket struct {
-	TableName string      `@Ident"["`
-	Index     *Expression `@@ "]"` // Parentheses
+type TableRetrieve struct {
+	TableName       string           `@Ident`
+	IndexValue      *TableValueIndex `("."@@`
+	IndexExpression *Expression      `|"["@@"]")`
 }
-
-type TableRetrieveWithoutBracket struct {
-	TableName *string `@Ident "."`
-	Index     *string ` @Ident`
+type TableValueIndex struct {
+	FunctionCall  *FunctionCall  `@@`
+	TableRetrieve *TableRetrieve `|@@`
+	Identifier    *string        `|@Ident`
 }
-
 type TableDeclaration struct {
 	Entries []*TableEntry `"{" @@* "}"` // Parentheses
 }
 
 type TableEntry struct {
-	Name  *string     `(@Ident "=")?`
+	Name  *Value      `(@@ "=")?`
 	Value *Expression `@@`
 	Come  string      `","?`
 }
@@ -34,12 +34,12 @@ type MathExpression struct {
 
 type TermExpression struct {
 	LeftTerm  *BaseValueExp   `@@`
-	Operator  *string         `(@("/"|"*")` // Multiplication or division
+	Operator  *string         `(@("/" | "*" | ">" "=" | ">" | "<" "=" | "<")` // Multiplication or division
 	RightTerm *TermExpression `@@)?`
 }
 
 type LExpression struct {
-	Operator string          `@("+" | "-" | "or" | "and")`
+	Operator string          `@("+" | "-" | "or" | "and" | "." "." | "=" "=" | "~" "=" )`
 	HExp     *TermExpression `@@`
 }
 
@@ -54,29 +54,33 @@ type Variable struct {
 }
 
 type Value struct {
-	Number                      *float32                     `@Float | @Int`
-	FunctionCall                *FunctionCall                `| @@`
-	String                      *string                      `| @String`
-	Bool                        *bool                        `| @("true" | "false") `
-	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
-	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`
-	Identifier                  *string                      `|@Ident`
+	Int           *int           `@Int`
+	Float         *float32       `|@Float`
+	String        *string        `|@String`
+	Bool          *string        `|@("true" | "false") `
+	FunctionCall  *FunctionCall  `|@@`
+	TableRetrieve *TableRetrieve `|@@`
+	Identifier    *string        `|@Ident`
 }
 
 type FunctionCall struct {
-	Name string           `@Ident`
-	Args []*ParamFunction `"("@@*")"`
+	Name string               `@Ident`
+	Args []*ParamFunctionCall `"("@@*")"`
 }
 
-type ParamFunction struct {
+type ParamFunctionCall struct {
 	Param *Expression `@@`
 	Coma  *string     `","?`
 }
 
 type ExpressionFunction struct {
-	Declaration string            `@"function"`
-	Args        []string          `"("@Ident*")"`
-	Body        Lua               `@@`
-	Return      *ReturnExpression `@@?`
-	End         string            `"end"!`
+	Declaration string                      `@"function"`
+	Args        []*ParamFunctionDeclaration `"("@@*")"`
+	Body        Lua                         `@@`
+	Return      *ReturnExpression           `@@?`
+	End         string                      `"end"!`
+}
+type ParamFunctionDeclaration struct {
+	Param string  `@Ident`
+	Coma  *string `","?`
 }

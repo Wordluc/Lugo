@@ -22,6 +22,21 @@ func TestSimpleMathOperationWithLocal(t *testing.T) {
 		t.Fatalf("error %v expected: %v, got: %v", "simpleMathOperationWithLocal", ex, res)
 	}
 }
+func TestSimpleMathOperationWithoutSave(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova", "3*(4+2)/4+1")
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex := "(3 * (((4) + (2)) / (4))) + (1)"
+	if res != ex {
+		t.Fatalf("error %v expected: %v, got: %v", "TestSimpleMathOperationWithoutSave", ex, res)
+	}
+}
 func TestSimpleMathOperationWithoutLocal(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
@@ -223,7 +238,7 @@ func TestLabdaFunction(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`prova=function (nome){local boo=(nome)
+		`prova=function (nome,){local boo=(nome)
 		local eta={(12),(43) + (3),}
 		return (eta)
 		}
@@ -257,8 +272,7 @@ func TestTableWithLabdaFunction(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`local persona={nome=("luca"),eta=(12),getFood=function (){
-		return ("kebab")
+		`local persona={nome=("luca"),eta=(12),getFood=function (){return ("kebab")
 		},}
 		return (persona)`
 	res = strings.ReplaceAll(res, "\u0009", "")
@@ -267,5 +281,67 @@ func TestTableWithLabdaFunction(t *testing.T) {
 
 	if res != ex {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "LabdFunctionInTable", ex+"|", res+"|")
+	}
+}
+func TestFunctionDeclarationWithMultipleParams(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`function prova(a,b)
+	local a=3>=4+4==4 + 4<4
+	local b=34*4+4>3
+	local f=3>=4==false
+	prova()
+	prova()
+	end
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`function prova(a,b,){
+	local a=(3 >= (4)) + (4) == (4) + (4 < (4))
+	local b=(34 * (4)) + (4 > (3))
+	local f=(3 >= (4)) == (false)
+	(prova())
+	(prova())
+	}`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
+	}
+}
+func TestDictionaryUse(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`local f = {
+		a=function ()return "hello" end,
+		"world",
+	}
+	c=f.a().." "..f[1]
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`local f={a=function (){return ("hello")
+		},("world"),}
+		c=(f.a()) .. (" ") .. (f[(1)])`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
 	}
 }

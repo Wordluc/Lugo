@@ -25,12 +25,18 @@ func (e *FunctionCall) toString() string {
 	return res
 }
 
-func (e *Value) toString() string {
-	if e.TableRetrieveWithoutBracket != nil {
-		return e.TableRetrieveWithoutBracket.toString()
+func (e *TableValueIndex) toString() string {
+	if e.Identifier != nil {
+		return *e.Identifier
 	}
-	if e.TableRetrieveWithBracket != nil {
-		return e.TableRetrieveWithBracket.toString()
+	if e.FunctionCall != nil {
+		return e.FunctionCall.toString()
+	}
+	return "<undefined>"
+}
+func (e *Value) toString() string {
+	if e.TableRetrieve != nil {
+		return e.TableRetrieve.toString()
 	}
 	if e.Identifier != nil {
 		return *e.Identifier
@@ -41,8 +47,11 @@ func (e *Value) toString() string {
 	if e.String != nil {
 		return *e.String
 	}
-	if e.Number != nil {
-		return fmt.Sprint(*e.Number)
+	if e.Int != nil {
+		return fmt.Sprint(*e.Int)
+	}
+	if e.Float != nil {
+		return fmt.Sprint(*e.Float)
 	}
 	if e.Bool != nil {
 		return fmt.Sprint(*e.Bool)
@@ -111,39 +120,41 @@ func (e *TableDeclaration) toString() string {
 func (e *TableEntry) toString() string {
 	res := ""
 	if e.Name != nil {
-		res += *e.Name
+		res += e.Name.toString()
 		res += "="
 	}
 	res += e.Value.toString()
 	return res
 }
-func (e *TableRetrieveWithBracket) toString() string {
+func (e *TableRetrieve) toString() string {
 	res := ""
 	res += e.TableName
-	res += "["
-	res += e.Index.toString()
-	res += "]"
+	if e.IndexExpression != nil {
+		res += "["
+		res += e.IndexExpression.toString()
+		res += "]"
+	}
+	if e.IndexValue != nil {
+		res += "."
+		res += e.IndexValue.toString()
+	}
 	return res
 }
-func (e *TableRetrieveWithoutBracket) toString() string {
-	res := ""
-	res += *e.TableName
-	res += "."
-	res += *e.Index
-	return res
-}
-
 func (e *ExpressionFunction) toString() string {
 	res := ""
 	res += e.Declaration
 	res += " "
 	res += "("
 	for _, v := range e.Args {
-		res += v
+		res += v.toString()
 	}
 	res += "){"
 	res += ""
 	res += e.Body.toString()
 	res += "}"
 	return res
+}
+
+func (e *ParamFunctionDeclaration) toString() string {
+	return fmt.Sprint(e.Param, ",")
 }

@@ -89,6 +89,9 @@ type String struct {
 	value string
 }
 
+func (i *String) Get() string {
+	return i.value
+}
 func (i *String) Type() TypeValue {
 	return StringType
 }
@@ -209,9 +212,10 @@ func EvalStrings(_a *String, op string, _b *String) (Value, error) {
 }
 
 type Function struct {
-	Body    parser.Lua
-	Params  []string
-	BaseEnv *Environment
+	Body           parser.Lua
+	Params         []string
+	BaseEnv        *Environment
+	customFunction func(env *Environment) Value
 }
 
 func (f *Function) Type() TypeValue {
@@ -232,6 +236,12 @@ func (f *Function) Call(params ...Value) (Value, error) {
 			fun.AddVariable(f.Params[i], nil) //to see
 		}
 		fun.AddVariable(f.Params[i], params[i])
+	}
+	if f.customFunction != nil {
+		for i := range params {
+			fun.AddVariable(fmt.Sprint(i), params[i])
+		}
+		return f.customFunction(fun.Environment), nil
 	}
 	err := fun.Run()
 	if err != nil {

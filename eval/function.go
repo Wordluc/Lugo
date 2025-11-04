@@ -10,6 +10,8 @@ func (p *Program) EvalFunctionCall(call *parser.FunctionCall) (Value, error) {
 	if !ok {
 		return nil, fmt.Errorf("Function %v not registered", call.Name)
 	}
+	fun := f.(*Function)
+	fun.BaseEnv = p.Environment
 	var e error
 	var params []Value = make([]Value, len(call.Args))
 	for i := range call.Args {
@@ -18,5 +20,5 @@ func (p *Program) EvalFunctionCall(call *parser.FunctionCall) (Value, error) {
 			return nil, e
 		}
 	}
-	return f.(*Function).Call(params...)
+	return fun.Call(params...)
 }

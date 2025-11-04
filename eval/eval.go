@@ -10,8 +10,11 @@ type Program struct {
 }
 
 func NewEval(tree parser.Lua) *Program {
+	return NewCustomEval(tree, NewEnvironment())
+}
+func NewCustomEval(tree parser.Lua, env *Environment) *Program {
 	return &Program{
-		NewEnvironment(),
+		env,
 		tree,
 	}
 }
@@ -87,6 +90,7 @@ func (p *Program) getFunction(exp *parser.StatementFunction) Function {
 		exp.Body,
 		args,
 		p.Environment,
+		nil,
 	}
 }
 func (p *Program) getLambdaFunction(exp *parser.ExpressionFunction) *Function {
@@ -98,6 +102,7 @@ func (p *Program) getLambdaFunction(exp *parser.ExpressionFunction) *Function {
 		exp.Body,
 		args,
 		p.Environment,
+		nil,
 	}
 }
 

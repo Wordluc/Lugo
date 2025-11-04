@@ -4,6 +4,7 @@ import (
 	"Lugo/parser"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type TypeValue string
@@ -188,9 +189,10 @@ func EvalStrings(a *String, op string, b *String) (Value, error) {
 	//remove " from the begin and the end
 	//	a.value = a.value[1 : len(a.value)-1]
 	//	b.value = b.value[1 : len(b.value)-1]
-
 	if op == ".." {
-		return &String{a.value + b.value}, nil
+		a, _ := strings.CutSuffix(a.value, "\"")
+		b, _ := strings.CutPrefix(b.value, "\"")
+		return &String{a + b}, nil
 	}
 	switch op {
 	case ">=":

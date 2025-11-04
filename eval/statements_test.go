@@ -208,7 +208,7 @@ func TestStringOperation(t *testing.T) {
 		t.Fatal(e)
 	}
 	value, _ := eval.GetVariable("a")
-	if value.(*String).value != "ciao luca" {
+	if value.(*String).value != "\"ciao luca\"" {
 		t.Fatalf("%v should be %v, instead is %v", "a", "ciao luca", value.(*String).value)
 	}
 
@@ -255,9 +255,10 @@ func TestLambdafunction(t *testing.T) {
 func TestDictionary(t *testing.T) {
 	code := `
 	local f = {
-		"a"=function ()return 45 end,
+		a=function ()return 45 end,
 		"ciao",
-		"d"=4,
+		d=4,
+		43,
 	}
 	`
 	parser, err := participle.Build[parser.Lua]()
@@ -286,6 +287,12 @@ func TestDictionary(t *testing.T) {
 			t.Error(e)
 		}
 		t.Fatalf("%v should be type %v, instead is %v", "1", "string", value.Type())
+	}
+	if r, e := dic.Get(&Int{value: 2}); r.Type() != IntType || e != nil {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be type %v, instead is %v", "2", "int", value.Type())
 	}
 	if r, e := dic.Get(&String{value: "a"}); r.Type() != FunctionType || e != nil {
 		if e != nil {

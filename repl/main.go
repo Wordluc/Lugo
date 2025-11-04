@@ -12,13 +12,19 @@ import (
 
 func main() {
 	env := eval.NewEnvironment()
-	env.AddCustomFunction("print", func(env *eval.Environment) eval.Value {
-		v, e := env.GetVariable("0")
-		if e != nil {
-			println(e.Error())
-			return nil
+	env.AddCustomFunction("print", func(env *eval.Environment, args []eval.Value) eval.Value {
+		for i := range args {
+			fmt.Printf("%v ", args[i].Get())
 		}
-		println(v.(*eval.String).Get())
+		println()
+		return nil
+	})
+	env.AddCustomFunction("println", func(env *eval.Environment, args []eval.Value) eval.Value {
+		for i := range args {
+			fmt.Printf("%v ", args[i].Get())
+		}
+		println()
+		println()
 		return nil
 	})
 	for {

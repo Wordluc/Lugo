@@ -24,7 +24,7 @@ func TestAssignNumber(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, e := eval.GetVariable("a")
+	value, e := eval.GetRawVariable("a")
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -50,7 +50,7 @@ func TestSumNumbers(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, e := eval.GetVariable("a")
+	value, e := eval.GetRawVariable("a")
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -76,7 +76,7 @@ func TestSumAndMultNumbers(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, e := eval.GetVariable("a")
+	value, e := eval.GetRawVariable("a")
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -102,7 +102,7 @@ func TestSumAndMultNumbers2(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, e := eval.GetVariable("a")
+	value, e := eval.GetRawVariable("a")
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -132,7 +132,7 @@ func TestDeclareFunc(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, e := eval.GetVariable("return")
+	value, e := eval.GetRawVariable("return")
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -176,7 +176,7 @@ func TestLogicalOperation(t *testing.T) {
 		"g": false,
 	}
 	for key, v := range result {
-		value, _ := eval.GetVariable(key)
+		value, _ := eval.GetRawVariable(key)
 		if value == nil {
 			t.Fatalf("%v not found", key)
 		}
@@ -207,17 +207,17 @@ func TestStringOperation(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, _ := eval.GetVariable("a")
+	value, _ := eval.GetRawVariable("a")
 	if value.(*String).value != "ciao luca" {
 		t.Fatalf("%v should be %v, instead is %v", "a", "ciao luca", value.(*String).value)
 	}
 
-	value, _ = eval.GetVariable("b")
+	value, _ = eval.GetRawVariable("b")
 	if value.(*Bool).value != true {
 		t.Fatalf("%v should be %v, instead is %v", "b", "true", value.(*Bool).value)
 	}
 
-	value, _ = eval.GetVariable("c")
+	value, _ = eval.GetRawVariable("c")
 	if value.(*Bool).value != true {
 		t.Fatalf("%v should be %v, instead is %v", "c", "true", value.(*Bool).value)
 	}
@@ -246,7 +246,7 @@ func TestLambdafunction(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, _ := eval.GetVariable("a")
+	value, _ := eval.GetRawVariable("a")
 	if value.(*Int).value != 9 {
 		t.Fatalf("%v should be %v, instead is %v", "a", 9, value.(*Int).value)
 	}
@@ -278,7 +278,7 @@ func TestDictionary(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	value, e := eval.GetVariable("c")
+	value, e := eval.GetRawVariable("c")
 	if e != nil {
 		t.Fatal(e)
 	}

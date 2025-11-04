@@ -21,6 +21,7 @@ const (
 type Value interface {
 	Type() TypeValue
 	EvalOp(string, Value) (Value, error)
+	Get() any
 }
 
 type Int struct {
@@ -29,6 +30,9 @@ type Int struct {
 
 func (i *Int) Type() TypeValue {
 	return IntType
+}
+func (i *Int) Get() any {
+	return i.value
 }
 
 func (i *Int) CastFloat() *Float {
@@ -70,6 +74,9 @@ func (i *Float) CastString() *String {
 		fmt.Sprint(i.value),
 	}
 }
+func (i *Float) Get() any {
+	return i.value
+}
 
 func (i *Float) EvalOp(op string, v Value) (Value, error) {
 	switch v := v.(type) {
@@ -89,9 +96,17 @@ type String struct {
 	value string
 }
 
-func (i *String) Get() string {
-	return i.value
+func (i *String) Get() any {
+	v, _ := strings.CutSuffix(i.value, "\"")
+	v, _ = strings.CutPrefix(v, "\"")
+	return v
 }
+func NewString(r string) *String {
+	return &String{
+		value: r,
+	}
+}
+
 func (i *String) Type() TypeValue {
 	return StringType
 }
@@ -116,6 +131,9 @@ func (i *Bool) Type() TypeValue {
 	return BoolType
 }
 
+func (i *Bool) Get() any {
+	return i.value
+}
 func (i *Bool) EvalOp(op string, v Value) (Value, error) {
 	if v.Type() != i.Type() {
 		return nil, fmt.Errorf("The operation %v isnt possible with type %v and %v", op, i.Type(), v.Type())
@@ -215,13 +233,15 @@ type Function struct {
 	Body           parser.Lua
 	Params         []string
 	BaseEnv        *Environment
-	customFunction func(env *Environment) Value
+	customFunction func(env *Environment, args []Value) Value
 }
 
 func (f *Function) Type() TypeValue {
 	return FunctionType
 }
-
+func (f *Function) Get() any {
+	return "<no supported>"
+}
 func (f *Function) EvalOp(op string, v Value) (Value, error) {
 	return nil, errors.New("Function does't support this operation:" + op)
 }
@@ -238,16 +258,13 @@ func (f *Function) Call(params ...Value) (Value, error) {
 		fun.AddVariable(f.Params[i], params[i])
 	}
 	if f.customFunction != nil {
-		for i := range params {
-			fun.AddVariable(fmt.Sprint(i), params[i])
-		}
-		return f.customFunction(fun.Environment), nil
+		return f.customFunction(fun.Environment, params), nil
 	}
 	err := fun.Run()
 	if err != nil {
 		return nil, err
 	}
-	value, err := fun.Environment.GetVariable("return")
+	value, err := fun.Environment.GetRawVariable("return")
 	if err != nil {
 		return nil, err
 	}
@@ -259,8 +276,12 @@ type Dictionary struct {
 	Elements map[Value]Value
 }
 
+func (i *Dictionary) Get() any {
+	return "<no supported>"
+}
+
 // TODO; refactor
-func (i *Dictionary) Get(key Value) (res Value, e error) {
+func (i *Dictionary) GetValue(key Value) (res Value, e error) {
 	for i, v := range i.Elements {
 		if i.Type() != key.Type() {
 			continue

@@ -57,14 +57,14 @@ func (p *Program) EvalValueTable(exp *parser.TableValueIndex) (Value, error) {
 	case exp.FunctionCall != nil:
 		return p.EvalFunctionCall(exp.FunctionCall)
 	case exp.Identifier != nil:
-		return p.Environment.GetVariable(*exp.Identifier)
+		return p.Environment.GetRawVariable(*exp.Identifier)
 	case exp.TableRetrieve != nil:
 		return p.EvalTableRetrieve(exp.TableRetrieve)
 	}
 	return nil, nil
 }
 func (p *Program) EvalTableRetrieve(exp *parser.TableRetrieve) (Value, error) {
-	value, e := p.GetVariable(exp.TableName)
+	value, e := p.GetRawVariable(exp.TableName)
 	if e != nil {
 		return nil, e
 	}
@@ -77,7 +77,7 @@ func (p *Program) EvalTableRetrieve(exp *parser.TableRetrieve) (Value, error) {
 		if e != nil {
 			return nil, e
 		}
-		return dic.Get(index)
+		return dic.GetValue(index)
 	}
 }
 func (p *Program) EvalValue(exp *parser.Value) (Value, error) {
@@ -104,7 +104,7 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) {
 			value: false,
 		}, nil
 	case exp.Identifier != nil:
-		return p.Environment.GetVariable(*exp.Identifier)
+		return p.Environment.GetRawVariable(*exp.Identifier)
 	case exp.FunctionCall != nil:
 		return p.EvalFunctionCall(exp.FunctionCall)
 	case exp.TableRetrieve != nil:

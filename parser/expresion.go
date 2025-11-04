@@ -7,18 +7,15 @@ type Expression struct {
 	MathExpression           *MathExpression      `|@@)`
 }
 
-type TableRetrieveWithBracket struct {
-	TableName string      `@Ident"["`
-	Index     *Expression `@@ "]"` // Parentheses
-}
-
-type TableRetrieveWithoutBracket struct {
-	TableName *string          `@Ident "."`
-	Index     *TableValueIndex ` @@`
+type TableRetrieve struct {
+	TableName       string           `@Ident`
+	IndexValue      *TableValueIndex `("."@@`
+	IndexExpression *Expression      `|"["@@"]")`
 }
 type TableValueIndex struct {
-	FunctionCall *FunctionCall `@@`
-	Identifier   *string       `|@Ident`
+	FunctionCall  *FunctionCall  `@@`
+	TableRetrieve *TableRetrieve `|@@`
+	Identifier    *string        `|@Ident`
 }
 type TableDeclaration struct {
 	Entries []*TableEntry `"{" @@* "}"` // Parentheses
@@ -57,14 +54,13 @@ type Variable struct {
 }
 
 type Value struct {
-	Int                         *int                         `@Int`
-	Float                       *float32                     `|@Float`
-	String                      *string                      `|@String`
-	Bool                        *string                      `|@("true" | "false") `
-	FunctionCall                *FunctionCall                `|@@`
-	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`
-	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
-	Identifier                  *string                      `|@Ident`
+	Int           *int           `@Int`
+	Float         *float32       `|@Float`
+	String        *string        `|@String`
+	Bool          *string        `|@("true" | "false") `
+	FunctionCall  *FunctionCall  `|@@`
+	TableRetrieve *TableRetrieve `|@@`
+	Identifier    *string        `|@Ident`
 }
 
 type FunctionCall struct {

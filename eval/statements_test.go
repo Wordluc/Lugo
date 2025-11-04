@@ -349,8 +349,11 @@ func TestDictionaryPlusPlus(t *testing.T) {
 	local f = {
 		a="hello",
 		b="world",
+		c={
+			"all",
+		}
 	}
-	c=f.a .. " " .. f.b 
+	c=f.a .. " " .. f.b .. " " .. f.c[1]
 	`
 	parser, err := participle.Build[parser.Lua]()
 	if err != nil {
@@ -372,7 +375,7 @@ func TestDictionaryPlusPlus(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if r, _ := value.(*String); r.value != "hello world" {
+	if r, _ := value.(*String); r.value != "hello world all" {
 		if e != nil {
 			t.Error(e)
 		}

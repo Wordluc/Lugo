@@ -53,14 +53,32 @@ func (p *Program) EvalLExpression(value Value, exps []*parser.LExpression) (Valu
 }
 
 func (p *Program) EvalValueTable(exp *parser.TableValueIndex) (Value, error) {
-
 	switch {
 	case exp.FunctionCall != nil:
 		return p.EvalFunctionCall(exp.FunctionCall)
 	case exp.Identifier != nil:
 		return p.Environment.GetVariable(*exp.Identifier)
+	case exp.TableRetrieve != nil:
+		return p.EvalTableRetrieve(exp.TableRetrieve)
 	}
 	return nil, nil
+}
+func (p *Program) EvalTableRetrieve(exp *parser.TableRetrieve) (Value, error) {
+	value, e := p.GetVariable(exp.TableName)
+	if e != nil {
+		return nil, e
+	}
+	dic := value.(*Dictionary)
+	pTemp := NewHigherTempEval(p, dic)
+	if exp.IndexValue != nil {
+		return pTemp.EvalValueTable(exp.IndexValue)
+	} else {
+		index, e := pTemp.EvalExp(*exp.IndexExpression)
+		if e != nil {
+			return nil, e
+		}
+		return dic.Get(index)
+	}
 }
 func (p *Program) EvalValue(exp *parser.Value) (Value, error) {
 	switch {
@@ -89,27 +107,8 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) {
 		return p.Environment.GetVariable(*exp.Identifier)
 	case exp.FunctionCall != nil:
 		return p.EvalFunctionCall(exp.FunctionCall)
-	case exp.TableRetrieveWithoutBracket != nil:
-		value, e := p.GetVariable(*exp.TableRetrieveWithoutBracket.TableName)
-		if e != nil {
-			return nil, e
-		}
-		dic := value.(*Dictionary)
-		pTemp := NewHigherTempEval(p, dic)
-		return pTemp.EvalValueTable(exp.TableRetrieveWithoutBracket.Index)
-
-	case exp.TableRetrieveWithBracket != nil:
-		value, e := p.GetVariable(exp.TableRetrieveWithBracket.TableName)
-		if e != nil {
-			return nil, e
-		}
-		dic := value.(*Dictionary)
-		pTemp := NewHigherTempEval(p, dic)
-		index, e := pTemp.EvalExp(*exp.TableRetrieveWithBracket.Index)
-		if e != nil {
-			return nil, e
-		}
-		return dic.Get(index)
+	case exp.TableRetrieve != nil:
+		return p.EvalTableRetrieve(exp.TableRetrieve)
 	}
 	return nil, nil
 }

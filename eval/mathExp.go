@@ -52,7 +52,17 @@ func (p *Program) EvalLExpression(value Value, exps []*parser.LExpression) (Valu
 	return result, nil
 }
 
-func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //TableRetrieveWithoutBracket,TableRetrieveWithBracket miss
+func (p *Program) EvalValueTable(exp *parser.TableValueIndex) (Value, error) {
+
+	switch {
+	case exp.FunctionCall != nil:
+		return p.EvalFunctionCall(exp.FunctionCall)
+	case exp.Identifier != nil:
+		return p.Environment.GetVariable(*exp.Identifier)
+	}
+	return nil, nil
+}
+func (p *Program) EvalValue(exp *parser.Value) (Value, error) {
 	switch {
 	case exp.Int != nil:
 		return &Int{
@@ -86,7 +96,7 @@ func (p *Program) EvalValue(exp *parser.Value) (Value, error) { //TableRetrieveW
 		}
 		dic := value.(*Dictionary)
 		pTemp := NewHigherTempEval(p, dic)
-		return pTemp.EvalValue(exp.TableRetrieveWithoutBracket.Index)
+		return pTemp.EvalValueTable(exp.TableRetrieveWithoutBracket.Index)
 
 	case exp.TableRetrieveWithBracket != nil:
 		value, e := p.GetVariable(exp.TableRetrieveWithBracket.TableName)

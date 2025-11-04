@@ -25,6 +25,15 @@ func (e *FunctionCall) toString() string {
 	return res
 }
 
+func (e *TableValueIndex) toString() string {
+	if e.Identifier != nil {
+		return *e.Identifier
+	}
+	if e.FunctionCall != nil {
+		return e.FunctionCall.toString()
+	}
+	return "<undefined>"
+}
 func (e *Value) toString() string {
 	if e.TableRetrieveWithoutBracket != nil {
 		return e.TableRetrieveWithoutBracket.toString()

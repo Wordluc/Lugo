@@ -13,10 +13,13 @@ type TableRetrieveWithBracket struct {
 }
 
 type TableRetrieveWithoutBracket struct {
-	TableName *string `@Ident "."`
-	Index     *Value  ` @@`
+	TableName *string          `@Ident "."`
+	Index     *TableValueIndex ` @@`
 }
-
+type TableValueIndex struct {
+	FunctionCall *FunctionCall `@@`
+	Identifier   *string       `|@Ident`
+}
 type TableDeclaration struct {
 	Entries []*TableEntry `"{" @@* "}"` // Parentheses
 }
@@ -56,11 +59,11 @@ type Variable struct {
 type Value struct {
 	Int                         *int                         `@Int`
 	Float                       *float32                     `|@Float`
-	FunctionCall                *FunctionCall                `|@@`
 	String                      *string                      `|@String`
 	Bool                        *string                      `|@("true" | "false") `
-	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
+	FunctionCall                *FunctionCall                `|@@`
 	TableRetrieveWithBracket    *TableRetrieveWithBracket    `|@@`
+	TableRetrieveWithoutBracket *TableRetrieveWithoutBracket `|@@`
 	Identifier                  *string                      `|@Ident`
 }
 

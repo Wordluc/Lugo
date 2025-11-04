@@ -344,3 +344,38 @@ func TestDictionaryPlus(t *testing.T) {
 		t.Fatalf("%v should be %v, instead is %v", "c", "hello world people", r.value)
 	}
 }
+func TestDictionaryPlusPlus(t *testing.T) {
+	code := `
+	local f = {
+		a="hello",
+		b="world",
+	}
+	c=f.a .. " " .. f.b 
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("c")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(*String); r.value != "hello world" {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "c", "hello world", r.value)
+	}
+}

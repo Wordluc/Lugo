@@ -54,7 +54,8 @@ type Variable struct {
 }
 
 type Value struct {
-	Int           *int           `@Int`
+	IntNegative   *int           `"-"@Int`
+	Int           *int           `|@Int`
 	Float         *float32       `|@Float`
 	String        *string        `|@String`
 	Bool          *string        `|@("true" | "false") `

@@ -431,3 +431,69 @@ func TestIfConditionWithElseIf2(t *testing.T) {
 		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
 	}
 }
+func TestFor(t *testing.T) {
+	code := `
+	local res = 0
+	for i=0,10 do
+		res=i
+	end
+
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 2})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(int); r != 10 {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
+	}
+}
+func TestForWithStepper(t *testing.T) {
+	code := `
+	local res = 0
+	for i=10,5,-1 do
+		res=i
+	end
+
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 2})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(int); r != 5 {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
+	}
+}

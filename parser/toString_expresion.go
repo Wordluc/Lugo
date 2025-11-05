@@ -50,6 +50,9 @@ func (e *Value) toString() string {
 	if e.Int != nil {
 		return fmt.Sprint(*e.Int)
 	}
+	if e.IntNegative != nil {
+		return fmt.Sprint(-*e.IntNegative)
+	}
 	if e.Float != nil {
 		return fmt.Sprint(*e.Float)
 	}

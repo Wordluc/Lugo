@@ -82,6 +82,10 @@ func (p *Program) EvalTableRetrieve(exp *parser.TableRetrieve) (Value, error) {
 }
 func (p *Program) EvalValue(exp *parser.Value) (Value, error) {
 	switch {
+	case exp.IntNegative != nil:
+		return &Int{
+			value: -*exp.IntNegative,
+		}, nil
 	case exp.Int != nil:
 		return &Int{
 			value: *exp.Int,

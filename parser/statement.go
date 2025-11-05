@@ -4,7 +4,8 @@ type Statement struct {
 	NoStatement          *KeyWordNoStatement   `(?!@@)(`
 	StatementFunction    *StatementFunction    `@@`
 	StatementVariable    *StatementVariable    `|@@`
-	StatementIfCondition *StatementIfCondition `|@@)`
+	StatementIfCondition *StatementIfCondition `|@@`
+	StatementFor         *StatementFor         `|@@)`
 }
 type StatementFunction struct {
 	Declaration string                      `@"function"`
@@ -18,6 +19,15 @@ type StatementIfCondition struct {
 	ElseIf    []StatementElseIf `@@*`
 	Else      *Lua              `("else"@@)?`
 	End       string            `"end"`
+}
+type StatementFor struct {
+	For  string            `"for"`
+	From StatementVariable `@@","`
+	To   Value             `@@`
+	Step *Value            `(","@@)?`
+	Do   string            `"do"`
+	Body Lua               `@@`
+	End  string            `"end"`
 }
 type StatementElseIf struct {
 	Condition *Expression `"elseif" @@ "then"`

@@ -18,6 +18,20 @@ func (e *StatementFunction) toString() string {
 	return res
 }
 
+func (e *StatementFor) toString() string {
+	res := "FOR "
+	res += e.From.toString()
+	res += ","
+	res += e.To.toString()
+	if e.Step != nil {
+		res += ","
+		res += e.Step.toString()
+	}
+	res += " DO\n"
+	res += e.Body.toString()
+	res += "\nEND"
+	return res
+}
 func (e *StatementIfCondition) toString() string {
 	res := "IF "
 	res += e.Condition.toString()
@@ -52,6 +66,9 @@ func (e *Statement) toString() string {
 	}
 	if e.StatementIfCondition != nil {
 		return e.StatementIfCondition.toString()
+	}
+	if e.StatementFor != nil {
+		return e.StatementFor.toString()
 	}
 	return "<undefined>"
 }

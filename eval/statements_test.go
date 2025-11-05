@@ -289,3 +289,145 @@ func TestDictionary(t *testing.T) {
 		t.Fatalf("%v should be %v, instead is %v", "c", "hello world", r.value)
 	}
 }
+func TestIfCondition(t *testing.T) {
+	code := `
+	local res = false
+	if a==4 then
+		res=true
+	end
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 4})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(bool); !r {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "res", "true", r)
+	}
+}
+func TestIfCondition2(t *testing.T) {
+	code := `
+	local res = "ciao"
+	if a==4 then
+		res="hello"
+	else
+		res="dio"
+	end
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 3})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(string); r != "dio" {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
+	}
+}
+func TestIfConditionWithElseIf(t *testing.T) {
+	code := `
+	local res = "ciao"
+	if a==4 then
+		res="hello"
+	elseif a==2 then
+		res="dio"
+	elseif a==1 then
+		res="11111"
+	else 
+		res="porcoo"
+	end
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 1})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(string); r != "11111" {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "res", "11111", r)
+	}
+}
+func TestIfConditionWithElseIf2(t *testing.T) {
+	code := `
+	local res = "ciao"
+	if a==4 then
+		res="hello"
+	elseif a==2 then
+		res="dio"
+	elseif a==1 then
+		res="11111"
+	else 
+		res="porcoo"
+	end
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 2})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(string); r != "dio" {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
+	}
+}

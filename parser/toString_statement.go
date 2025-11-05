@@ -18,6 +18,27 @@ func (e *StatementFunction) toString() string {
 	return res
 }
 
+func (e *StatementIfCondition) toString() string {
+	res := "IF "
+	res += e.Condition.toString()
+	res += "THEN\n"
+	res += e.Body.toString()
+	res += "\n"
+	for i := range e.ElseIf {
+		res += "ELSEIF "
+		res += e.ElseIf[i].Condition.toString()
+		res += " THEN\n"
+		res += e.ElseIf[i].Body.toString()
+		res += "\n"
+	}
+	if e.Else != nil {
+		res += "ELSE\n"
+		res += e.Else.toString()
+		res += "\n"
+	}
+	res += "END"
+	return res
+}
 func (e *ParamFunctionCall) toString() string {
 	return fmt.Sprint(e.Param.toString(), ",")
 }
@@ -28,6 +49,9 @@ func (e *Statement) toString() string {
 	}
 	if e.StatementFunction != nil {
 		return e.StatementFunction.toString()
+	}
+	if e.StatementIfCondition != nil {
+		return e.StatementIfCondition.toString()
 	}
 	return "<undefined>"
 }

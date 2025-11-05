@@ -345,3 +345,115 @@ func TestDictionaryUse(t *testing.T) {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
 	}
 }
+func TestIfConditionSimple(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`if a==4 then
+			print("ciao") 
+		end
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`IF (a) == (4)THEN
+		(print(("ciao"),))
+		END`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
+	}
+}
+func TestIfConditionWithElse(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`if a==4 then
+			print("ciao") 
+			print("piipo") 
+		else
+			print("prova2") 
+			print("piipo") 
+		end
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`IF (a) == (4)THEN
+			(print(("ciao"),))
+			(print(("piipo"),))
+		ELSE
+			(print(("prova2"),))
+			(print(("piipo"),))
+		END`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	res = strings.ReplaceAll(res, " ", "")
+	ex = strings.ReplaceAll(ex, " ", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
+	}
+}
+func TestIfConditionWithElseIf(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`if a==4 then
+			print("ciao1") 
+			print("piipo1") 
+		elseif prova==4 then
+			print("ciao2") 
+			print("piipo2") 
+		elseif prova==5 then
+			print("ciao3") 
+			print("piipo3") 
+		else
+			print("provaww") 
+			print("piipoww") 
+		end
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`IF(a)==(4)THEN
+        (print(("ciao1"),))
+        (print(("piipo1"),))
+        ELSEIF(prova)==(4)THEN
+        (print(("ciao2"),))
+        (print(("piipo2"),))
+        ELSEIF(prova)==(5)THEN
+        (print(("ciao3"),))
+        (print(("piipo3"),))
+        ELSE
+        (print(("provaww"),))
+        (print(("piipoww"),))
+        END`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	res = strings.ReplaceAll(res, " ", "")
+	ex = strings.ReplaceAll(ex, " ", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
+	}
+}

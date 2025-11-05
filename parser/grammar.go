@@ -12,12 +12,12 @@ type Lua struct {
 
 // Define keyword that hasnt be valuated has expression
 type KeyWordNoExpression struct {
-	KeyWord *string `"end"|"return"`
+	KeyWord *string `"end"|"return"|"else"|"elseif"`
 }
 
 // Define keyword that hasnt be valuated has statement
 type KeyWordNoStatement struct {
-	KeyWord *string `"return"`
+	KeyWord *string `"return"|"else"|"elseif"|"end"`
 }
 
 type ReturnExpression struct {

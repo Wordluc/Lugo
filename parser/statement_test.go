@@ -360,9 +360,9 @@ func TestIfConditionSimple(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`if (a) == (4)then
+		`IF (a) == (4)THEN
 		(print(("ciao"),))
-		end`
+		END`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 
@@ -390,13 +390,13 @@ func TestIfConditionWithElse(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`if (a) == (4)then
+		`IF (a) == (4)THEN
 			(print(("ciao"),))
 			(print(("piipo"),))
-		else
+		ELSE
 			(print(("prova2"),))
 			(print(("piipo"),))
-		end`
+		END`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 
@@ -433,19 +433,19 @@ func TestIfConditionWithElseIf(t *testing.T) {
 	}
 	res := tr.toString()
 	ex :=
-		`if(a)==(4)then
+		`IF(a)==(4)THEN
         (print(("ciao1"),))
         (print(("piipo1"),))
-        elseif(prova)==(4)then
+        ELSEIF(prova)==(4)THEN
         (print(("ciao2"),))
         (print(("piipo2"),))
-        elseif(prova)==(5)then
+        ELSEIF(prova)==(5)THEN
         (print(("ciao3"),))
         (print(("piipo3"),))
-        else
+        ELSE
         (print(("provaww"),))
         (print(("piipoww"),))
-        end`
+        END`
 	res = strings.ReplaceAll(res, "\u0009", "")
 	ex = strings.ReplaceAll(ex, "\u0009", "")
 

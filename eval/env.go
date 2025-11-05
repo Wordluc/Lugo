@@ -3,19 +3,30 @@ package eval
 import "errors"
 
 type Environment struct {
-	variables map[string]Value
+	local     map[string]Value
 	global    map[string]Value
 	higherEnv *Environment
 }
 
 func NewEnvironment() *Environment {
 	return &Environment{
-		variables: make(map[string]Value),
-		global:    make(map[string]Value),
+		local:  make(map[string]Value),
+		global: make(map[string]Value),
 	}
 }
+func (e *Environment) SetVariable(name string, v Value) (found bool) {
+	if _, ok := e.local[name]; ok {
+		e.local[name] = v
+		return true
+	}
+	if _, ok := e.global[name]; ok {
+		e.global[name] = v
+		return true
+	}
+	return false
+}
 func (e *Environment) AddVariable(name string, v Value) error {
-	e.variables[name] = v
+	e.local[name] = v
 	return nil
 }
 func (e *Environment) AddGlobalVariable(name string, v Value) error {
@@ -36,11 +47,11 @@ func (e *Environment) AddCustomFunction(name string, f func(env *Environment, ar
 }
 
 func (e *Environment) GetRawVariable(name string) (Value, error) {
-	if v := e.variables[name]; v != nil {
+	if v := e.local[name]; v != nil {
 		return v, nil
 	}
 	if e.higherEnv != nil {
-		if v := e.higherEnv.variables[name]; v != nil {
+		if v := e.higherEnv.local[name]; v != nil {
 			return v, nil
 		}
 	}
@@ -57,13 +68,13 @@ func (env *Environment) GetVariable(name string) (any, error) {
 	}
 	switch v := value.(type) {
 	case *String:
-		return v.value, nil
+		return v.Get(), nil
 	case *Int:
-		return v.value, nil
+		return v.Get(), nil
 	case *Float:
-		return v.value, nil
+		return v.Get(), nil
 	case *Bool:
-		return v.value, nil
+		return v.Get(), nil
 	}
 	return nil, errors.New("Type not supported for getVariable")
 }

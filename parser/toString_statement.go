@@ -19,24 +19,24 @@ func (e *StatementFunction) toString() string {
 }
 
 func (e *StatementIfCondition) toString() string {
-	res := "if "
+	res := "IF "
 	res += e.Condition.toString()
-	res += "then\n"
+	res += "THEN\n"
 	res += e.Body.toString()
 	res += "\n"
 	for i := range e.ElseIf {
-		res += "elseif "
-		res += e.ElseIf[i].ElseIf.toString()
-		res += " then\n"
-		res += e.ElseIf[i].BodyElseIf.toString()
+		res += "ELSEIF "
+		res += e.ElseIf[i].Condition.toString()
+		res += " THEN\n"
+		res += e.ElseIf[i].Body.toString()
 		res += "\n"
 	}
 	if e.Else != nil {
-		res += "else\n"
-		res += e.Else.BodyElse.toString()
+		res += "ELSE\n"
+		res += e.Else.toString()
 		res += "\n"
 	}
-	res += "end"
+	res += "END"
 	return res
 }
 func (e *ParamFunctionCall) toString() string {

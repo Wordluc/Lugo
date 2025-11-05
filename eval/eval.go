@@ -2,6 +2,7 @@ package eval
 
 import (
 	"Lugo/parser"
+	"errors"
 )
 
 type Program struct {
@@ -47,11 +48,16 @@ func (p *Program) Run() error {
 			if e != nil {
 				return e
 			}
+			found := p.SetVariable(v.Variable.Name, value)
+			if found {
+				return nil
+			}
 			if v.Variable.Visibility != nil && *v.Variable.Visibility == "local" {
 				if e := p.Environment.AddVariable(v.Variable.Name, value); e != nil {
 					return e
 				}
 			}
+
 			if e := p.Environment.AddGlobalVariable(v.Variable.Name, value); e != nil {
 				return e
 			}
@@ -60,6 +66,28 @@ func (p *Program) Run() error {
 			f := p.getFunction(v)
 			if e := p.Environment.AddFunction(v.Name, f); e != nil {
 				return e
+			}
+		case st.StatementIfCondition != nil:
+			var continueIteration bool
+			var e error
+			if continueIteration, e = p.EvalBodyUnderCondition(&st.StatementIfCondition.Condition, st.StatementIfCondition.Body); e != nil {
+				return e
+			}
+			if !continueIteration {
+				return nil
+			}
+			for _, elseIf := range st.StatementIfCondition.ElseIf {
+				if continueIteration, e = p.EvalBodyUnderCondition(elseIf.Condition, *elseIf.Body); e != nil {
+					return e
+				}
+				if !continueIteration {
+					return nil
+				}
+			}
+			if st.StatementIfCondition.Else != nil {
+				if _, e := p.EvalBodyUnderCondition(nil, *st.StatementIfCondition.Else); e != nil {
+					return e
+				}
 			}
 		}
 	}
@@ -81,6 +109,25 @@ func (p *Program) Run() error {
 
 	return nil
 }
+func (p *Program) EvalBodyUnderCondition(condition *parser.Expression, body parser.Lua) (continueIteration bool, err error) {
+	var conditionResult Value = &Bool{value: true}
+	if condition != nil {
+		conditionResult, err = p.EvalExp(*condition)
+		if err != nil {
+			return false, err
+		}
+		if conditionResult.Type() != BoolType {
+			return false, errors.New("if condition has to be a bool")
+		}
+	}
+	res := conditionResult.(*Bool)
+	if res.value {
+		bodyResult := NewCustomEval(body, p.Environment)
+		return false, bodyResult.Run()
+	}
+	return true, nil
+}
+
 func (p *Program) getFunction(exp *parser.StatementFunction) Function {
 	args := make([]string, len(exp.Args))
 	for i := range exp.Args {

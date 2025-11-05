@@ -114,7 +114,7 @@ func (p *Program) EvalStatement(st *parser.Statement) error {
 		}
 	case st.StatementFor != nil:
 		env := NewEnvironment()
-		env.higherEnv = p.Environment
+		env.SetHigherEnvironment(p.Environment)
 		bodyResult := NewCustomEval(st.StatementFor.Body, p.Environment)
 		from, e := p.EvalExp(st.StatementFor.From.Expression)
 		if e != nil {
@@ -176,7 +176,7 @@ func (p *Program) EvalBodyUnderCondition(condition *parser.Expression, body pars
 
 	if res.value {
 		env := NewEnvironment()
-		env.higherEnv = p.Environment
+		env.SetHigherEnvironment(p.Environment)
 		bodyResult := NewCustomEval(body, p.Environment)
 		return false, bodyResult.Run()
 	}

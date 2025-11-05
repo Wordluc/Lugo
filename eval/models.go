@@ -264,10 +264,8 @@ func (f *Function) Call(params ...Value) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
-	value, err := fun.Environment.GetRawVariable("return")
-	if err != nil {
-		return nil, err
-	}
+
+	value, _ := fun.Environment.GetRawVariable("return")
 	return value, err
 }
 

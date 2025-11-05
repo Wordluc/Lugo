@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/alecthomas/participle/v2"
 )
@@ -27,22 +28,38 @@ func main() {
 		println()
 		return nil
 	})
+	var code string
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("--")
-		code, _ := reader.ReadString('\n')
-		pr, e := getProgram(code, env)
-		if e != nil {
-			println("Error:", e.Error())
+		t, _ := reader.ReadString('\n')
+		if strings.HasSuffix(t, "//\n") {
+			t, _ = strings.CutSuffix(t, "//")
+			code += t
+			continue
+		} else {
+			code += t
+			pr, e := getProgram(code, env)
+			if e != nil {
+				println("Error:", e.Error())
+			}
+			pr.Environment = env
+			if e != nil {
+				println("Error:", e.Error())
+			}
+			func() {
+				e = pr.Run()
+				if e != nil {
+					println("Error:", e.Error())
+				}
+				e := recover()
+				if e != nil {
+					println("Error:", e.(string))
+				}
+			}()
+			code = ""
 		}
-		pr.Environment = env
-		if e != nil {
-			println("Error:", e.Error())
-		}
-		e = pr.Run()
-		if e != nil {
-			println("Error:", e.Error())
-		}
+
 	}
 
 }

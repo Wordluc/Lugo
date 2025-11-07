@@ -29,36 +29,38 @@ func main() {
 		return nil
 	})
 	var code string
+	var gettingInput bool = false
 	for {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("--")
+		fmt.Print(">")
 		t, _ := reader.ReadString('\n')
 		if strings.HasSuffix(t, "//\n") {
-			t, _ = strings.CutSuffix(t, "//")
-			code += t
-			continue
+			gettingInput = !gettingInput
 		} else {
 			code += t
-			pr, e := getProgram(code, env)
-			if e != nil {
-				println("Error:", e.Error())
-			}
-			pr.Environment = env
-			if e != nil {
-				println("Error:", e.Error())
-			}
-			func() {
-				e = pr.Run()
-				if e != nil {
-					println("Error:", e.Error())
-				}
-				e := recover()
-				if e != nil {
-					println("Error:", e.(string))
-				}
-			}()
-			code = ""
 		}
+		if gettingInput {
+			continue
+		}
+		pr, e := getProgram(code, env)
+		if e != nil {
+			println("Error:", e.Error())
+		}
+		pr.Environment = env
+		if e != nil {
+			println("Error:", e.Error())
+		}
+		func() {
+			e = pr.Run()
+			if e != nil {
+				println("Error:", e.Error())
+			}
+			e := recover()
+			if e != nil {
+				println("Error:", e.(string))
+			}
+		}()
+		code = ""
 
 	}
 

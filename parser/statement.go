@@ -8,10 +8,10 @@ type Statement struct {
 	StatementFor         *StatementFor         `|@@)`
 }
 type StatementFunction struct {
-	Declaration string                      `@"function"`
-	Name        string                      `@Ident`
-	Args        []*ParamFunctionDeclaration `"("@@*")"`
-	Body        Lua                         `@@"end"!`
+	Fun  string                      `"function"`
+	Name string                      `@Ident`
+	Args []*ParamFunctionDeclaration `"("@@*")"`
+	Body Lua                         `@@"end"!`
 }
 type StatementIfCondition struct {
 	Condition Expression        `"if" @@ "then"`
@@ -21,14 +21,21 @@ type StatementIfCondition struct {
 	End       string            `"end"`
 }
 type StatementFor struct {
-	For  string            `"for"`
-	From StatementVariable `@@","`
-	To   Value             `@@`
-	Step *Value            `(","@@)?`
-	Do   string            `"do"`
-	Body Lua               `@@`
-	End  string            `"end"`
+	//First parameter
+	For  string             `"for"`
+	From *StatementVariable `(@@`
+	Key  *Value             `|@@)","`
+	//Value_To, from
+	Value_To *Value `@@`
+	//How iterate
+	Explist *Value `(("in" @@)`
+	Step    *Value `|("," @@))?`
+
+	Do   string `"do"`
+	Body Lua    `@@`
+	End  string `"end"`
 }
+
 type StatementElseIf struct {
 	Condition *Expression `"elseif" @@ "then"`
 	Body      *Lua        `@@`

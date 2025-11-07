@@ -3,8 +3,7 @@ package parser
 import "fmt"
 
 func (e *StatementFunction) toString() string {
-	res := ""
-	res += e.Declaration
+	res := "function"
 	res += " "
 	res += e.Name
 	res += "("
@@ -20,18 +19,28 @@ func (e *StatementFunction) toString() string {
 
 func (e *StatementFor) toString() string {
 	res := "FOR "
-	res += e.From.toString()
-	res += ","
-	res += e.To.toString()
-	if e.Step != nil {
+	isNumeric := e.Explist == nil
+	if isNumeric {
+		res += e.From.toString()
 		res += ","
-		res += e.Step.toString()
+		res += e.Value_To.toString()
+		if e.Step != nil {
+			res += ","
+			res += e.Step.toString()
+		}
+	} else {
+		res += e.Key.toString()
+		res += ","
+		res += e.Value_To.toString()
+		res += " IN "
+		res += e.Explist.toString()
 	}
 	res += " DO\n"
 	res += e.Body.toString()
 	res += "\nEND"
 	return res
 }
+
 func (e *StatementIfCondition) toString() string {
 	res := "IF "
 	res += e.Condition.toString()

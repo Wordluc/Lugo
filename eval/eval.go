@@ -124,7 +124,7 @@ func (p *Program) EvalStatement(st *parser.Statement) error {
 		if e != nil {
 			return e
 		}
-		to, e := p.EvalValue(&st.StatementFor.To)
+		to, e := p.EvalValue(st.StatementFor.Value_To)
 		if e != nil {
 			return e
 		}

@@ -457,7 +457,7 @@ func TestIfConditionWithElseIf(t *testing.T) {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
 	}
 }
-func TestFor(t *testing.T) {
+func TesNumerictFor(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
 		print(err.Error())
@@ -484,7 +484,7 @@ func TestFor(t *testing.T) {
 		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
 	}
 }
-func TestForWithStep(t *testing.T) {
+func TestNumericForWithStep(t *testing.T) {
 	parser, err := participle.Build[Lua]()
 	if err != nil {
 		print(err.Error())
@@ -501,6 +501,33 @@ func TestForWithStep(t *testing.T) {
 	res := tr.toString()
 	ex :=
 		`FOR i=(0),10,1 DO
+		(print(("ciao"),))
+		END`
+	res = strings.ReplaceAll(res, "\u0009", "")
+	ex = strings.ReplaceAll(ex, "\u0009", "")
+
+	ex += "\n"
+	if res != ex {
+		t.Fatalf("error %v expected: \n%v, got:\n %v", "DeclarationFunction", ex+"|", res+"|")
+	}
+}
+func TestIteratorFor(t *testing.T) {
+	parser, err := participle.Build[Lua]()
+	if err != nil {
+		print(err.Error())
+	}
+	tr, err := parser.ParseString("prova",
+		`
+		for k,v in prova() do
+			print("ciao")
+		end
+	`)
+	if err != nil {
+		print(err.Error())
+	}
+	res := tr.toString()
+	ex :=
+		`FOR k,v IN prova() DO
 		(print(("ciao"),))
 		END`
 	res = strings.ReplaceAll(res, "\u0009", "")

@@ -49,7 +49,7 @@ type BaseValueExp struct {
 }
 
 type Variable struct {
-	Visibility *string `@"local"?`
+	Visibility *string `(@"local")?`
 	Name       string  `@Ident "="`
 }
 

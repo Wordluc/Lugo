@@ -21,3 +21,6 @@ local f = {
 	a = "hello",
 	"world",
 }
+for i = 0, 10, 1 do
+	print("ciao")
+end

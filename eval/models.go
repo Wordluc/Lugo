@@ -10,12 +10,13 @@ import (
 type TypeValue string
 
 const (
-	IntType        TypeValue = "int"
-	FloatType      TypeValue = "float"
-	StringType     TypeValue = "string"
-	BoolType       TypeValue = "bool"
-	FunctionType   TypeValue = "function"
-	DictionaryType TypeValue = "Dictionary"
+	IntType              TypeValue = "int"
+	FloatType            TypeValue = "float"
+	StringType           TypeValue = "string"
+	BoolType             TypeValue = "bool"
+	FunctionType         TypeValue = "function"
+	DictionaryType       TypeValue = "Dictionary"
+	DictionaryForForType TypeValue = "DictionaryForFor"
 )
 
 type Value interface {
@@ -300,5 +301,21 @@ func (i *Dictionary) Type() TypeValue {
 }
 
 func (i *Dictionary) EvalOp(op string, v Value) (Value, error) {
+	return nil, errors.New("Dictionary does't support this operation:" + op)
+}
+
+type DictionaryForFor struct {
+	//TODO; refactor
+	Elements map[Value]Value
+}
+
+func (i *DictionaryForFor) Get() any {
+	return i.Elements
+}
+func (i *DictionaryForFor) Type() TypeValue {
+	return DictionaryType
+}
+
+func (i *DictionaryForFor) EvalOp(op string, v Value) (Value, error) {
 	return nil, errors.New("Dictionary does't support this operation:" + op)
 }

@@ -113,50 +113,89 @@ func (p *Program) EvalStatement(st *parser.Statement) error {
 			}
 		}
 	case st.StatementFor != nil:
-		env := NewEnvironment()
-		env.SetHigherEnvironment(p.Environment)
-		bodyResult := NewCustomEval(st.StatementFor.Body, p.Environment)
-		from, e := p.EvalExp(st.StatementFor.From.Expression)
+		var e error
+		if st.StatementFor.From != nil {
+			e = p.EvalNumericFor(st.StatementFor)
+		} else {
+			e = p.EvalIterateFor(st.StatementFor)
+		}
+		return e
+	}
+	return nil
+}
+func (p *Program) EvalNumericFor(st *parser.StatementFor) error {
+	env := NewEnvironment()
+	env.SetHigherEnvironment(p.Environment)
+	bodyResult := NewCustomEval(st.Body, p.Environment)
+	from, e := p.EvalExp(st.From.Expression)
+	if e != nil {
+		return e
+	}
+	e = p.AddVariable(st.From.Variable.Name, from)
+	if e != nil {
+		return e
+	}
+	to, e := p.EvalValue(st.Value_To)
+	if e != nil {
+		return e
+	}
+	for {
+		e = bodyResult.Run()
 		if e != nil {
 			return e
 		}
-		e = p.AddVariable(st.StatementFor.From.Variable.Name, from)
+		fromCondition, e := bodyResult.GetRawVariable(st.From.Variable.Name)
 		if e != nil {
 			return e
 		}
-		to, e := p.EvalValue(st.StatementFor.Value_To)
+		res, e := fromCondition.EvalOp("==", to)
 		if e != nil {
 			return e
 		}
-		for {
-			e = bodyResult.Run()
+		if res.(*Bool).value {
+			break
+		}
+		var stepper Value = &Int{value: 1}
+		if st.Step != nil {
+			stepper, e = bodyResult.EvalValue(st.Step)
 			if e != nil {
 				return e
 			}
-			fromCondition, e := bodyResult.GetRawVariable(st.StatementFor.From.Variable.Name)
-			if e != nil {
-				return e
-			}
-			res, e := fromCondition.EvalOp("==", to)
-			if e != nil {
-				return e
-			}
-			if res.(*Bool).value {
-				break
-			}
-			var stepper Value = &Int{value: 1}
-			if st.StatementFor.Step != nil {
-				stepper, e = bodyResult.EvalValue(st.StatementFor.Step)
-				if e != nil {
-					return e
-				}
-			}
-			newFrom, e := fromCondition.EvalOp("+", stepper)
-			if e != nil {
-				return e
-			}
-			bodyResult.SetVariable(st.StatementFor.From.Variable.Name, newFrom)
-
+		}
+		newFrom, e := fromCondition.EvalOp("+", stepper)
+		if e != nil {
+			return e
+		}
+		bodyResult.SetVariable(st.From.Variable.Name, newFrom)
+	}
+	return nil
+}
+func (p *Program) EvalIterateFor(st *parser.StatementFor) error {
+	env := NewEnvironment()
+	env.SetHigherEnvironment(p.Environment)
+	bodyResult := NewCustomEval(st.Body, p.Environment)
+	list, e := p.EvalValue(st.Explist)
+	if e != nil {
+		return e
+	}
+	if list.Type() != DictionaryForForType {
+		//	return errors.New("the for dosnt support this type" + string(list.Type()))
+	}
+	e = p.AddVariable(*st.Key.Identifier, nil)
+	if e != nil {
+		return e
+	}
+	e = p.AddVariable(*st.Value_To.Identifier, nil)
+	if e != nil {
+		return e
+	}
+	l := list.(*Dictionary).Elements
+	for key, item := range l {
+		p.SetVariable(*st.Key.Identifier, key)
+		p.SetVariable(*st.Value_To.Identifier, item)
+		e = bodyResult.Run()
+		if e != nil {
+			return e
 		}
 	}
 	return nil

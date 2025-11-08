@@ -497,3 +497,37 @@ func TestForWithStepper(t *testing.T) {
 		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
 	}
 }
+func TestIteratorFor(t *testing.T) {
+	code := `
+	local prova = {"ciao","come","stai"}
+	local res=""
+	for k,v in prova do
+		res=res.." "..v
+	end
+
+	`
+	parser, err := participle.Build[parser.Lua]()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr, err := parser.ParseString("test", code)
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval := NewEval(*tr)
+	eval.AddVariable("a", &Int{value: 2})
+	e := eval.Run()
+	if e != nil {
+		t.Fatal(e)
+	}
+	value, e := eval.GetVariable("res")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if r, _ := value.(string); r != " ciao come stai" {
+		if e != nil {
+			t.Error(e)
+		}
+		t.Fatalf("%v should be %v, instead is |%v|", "res", "dio", r)
+	}
+}

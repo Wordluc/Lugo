@@ -163,9 +163,6 @@ func TestLogicalOperation(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if e != nil {
-		t.Fatal(e)
-	}
 	var result = map[string]bool{
 		"a": true,
 		"b": true,
@@ -201,9 +198,6 @@ func TestStringOperation(t *testing.T) {
 	}
 	eval := NewEval(*tr)
 	e := eval.Run()
-	if e != nil {
-		t.Fatal(e)
-	}
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -243,9 +237,6 @@ func TestLambdafunction(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if e != nil {
-		t.Fatal(e)
-	}
 	value, _ := eval.GetRawVariable("a")
 	if value.(*Int).value != 9 {
 		t.Fatalf("%v should be %v, instead is %v", "a", 9, value.(*Int).value)
@@ -275,17 +266,11 @@ func TestDictionary(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if e != nil {
-		t.Fatal(e)
-	}
 	value, e := eval.GetRawVariable("c")
 	if e != nil {
 		t.Fatal(e)
 	}
 	if r, _ := value.(*String); r.value != "hello world all" {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "c", "hello world", r.value)
 	}
 }
@@ -315,9 +300,6 @@ func TestIfCondition(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(bool); !r {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "res", "true", r)
 	}
 }
@@ -349,9 +331,6 @@ func TestIfCondition2(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(string); r != "dio" {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
 	}
 }
@@ -387,9 +366,6 @@ func TestIfConditionWithElseIf(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(string); r != "11111" {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "res", "11111", r)
 	}
 }
@@ -425,9 +401,6 @@ func TestIfConditionWithElseIf2(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(string); r != "dio" {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
 	}
 }
@@ -458,9 +431,6 @@ func TestFor(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(int); r != 10 {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
 	}
 }
@@ -491,9 +461,6 @@ func TestForWithStepper(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(int); r != 5 {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
 	}
 }
@@ -525,9 +492,6 @@ func TestIteratorFor(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(string); r != " ciao come stai" {
-		if e != nil {
-			t.Error(e)
-		}
 		t.Fatalf("%v should be %v, instead is |%v|", "res", "dio", r)
 	}
 }

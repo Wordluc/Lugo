@@ -28,21 +28,11 @@ func main() {
 		println()
 		return nil
 	})
+
 	var code string
-	var gettingInput bool = false
-	for {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(">")
-		t, _ := reader.ReadString('\n')
-		if strings.HasSuffix(t, "//\n") {
-			gettingInput = !gettingInput
-		} else {
-			code += t
-		}
-		if gettingInput {
-			continue
-		}
-		pr, e := getProgram(code, env)
+	var multipleLine bool
+	runCode := func(code *string) {
+		pr, e := getProgram(*code, env)
 		if e != nil {
 			println("Error:", e.Error())
 		}
@@ -60,10 +50,27 @@ func main() {
 				println("Error:", e.(string))
 			}
 		}()
-		code = ""
+		*code = ""
 
 	}
+	for {
+		reader := bufio.NewReader(os.Stdin)
+		if !multipleLine {
+			fmt.Print("--")
+		}
+		t, _ := reader.ReadString('\n')
+		if strings.Contains(t, "//") {
+			multipleLine = !multipleLine
+			runCode(&code)
+			continue
+		}
 
+		code += t
+		if !multipleLine {
+			runCode(&code)
+		}
+
+	}
 }
 func getProgram(code string, env *eval.Environment) (*eval.Program, error) {
 	parser, err := participle.Build[parser.Lua]()

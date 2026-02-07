@@ -461,7 +461,7 @@ func TestForWithStepper(t *testing.T) {
 		t.Fatal(e)
 	}
 	if r, _ := value.(int); r != 5 {
-		t.Fatalf("%v should be %v, instead is %v", "res", "dio", r)
+		t.Fatalf("%v should be %v, instead is %v", "res", "5", r)
 	}
 }
 func TestIteratorFor(t *testing.T) {
@@ -482,7 +482,6 @@ func TestIteratorFor(t *testing.T) {
 		t.Fatal(err)
 	}
 	eval := NewEval(*tr)
-	eval.AddVariable("a", &Int{value: 2})
 	e := eval.Run()
 	if e != nil {
 		t.Fatal(e)
